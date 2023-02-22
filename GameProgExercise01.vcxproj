@@ -168,7 +168,7 @@
       <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Link>
-	<FXCompile>
+    <FXCompile>
       <ShaderModel>4.0</ShaderModel>
     </FXCompile>
   </ItemDefinitionGroup>
@@ -199,8 +199,8 @@
       <StackReserveSize>8192</StackReserveSize>
       <AdditionalDependencies>d3d11.lib;dxgi.lib;dxguid.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-    </Link>    
-	<FXCompile>
+    </Link>
+    <FXCompile>
       <ShaderModel>4.0</ShaderModel>
     </FXCompile>
   </ItemDefinitionGroup>
@@ -209,6 +209,7 @@
     <ClCompile Include="DX\DeviceResources.cpp" />
     <ClCompile Include="GameProgExercise01.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Utils\File.cpp" />
     <ClCompile Include="Utils\IO.cpp" />
     <ClCompile Include="Utils\Maths.cpp" />
     <ClCompile Include="Utils\Memory.cpp" />
@@ -227,13 +228,14 @@
     <ClInclude Include="DX\DeviceResources.h" />
     <ClInclude Include="GameProgExercise01.h" />
     <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Utils\File.h" />
     <ClInclude Include="Utils\IO.h" />
     <ClInclude Include="Utils\Maths.h" />
     <ClInclude Include="Utils\Memory.h" />
     <ClInclude Include="Utils\printf.h" />
     <ClInclude Include="Utils\Timers.h" />
   </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
