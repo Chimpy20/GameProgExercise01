@@ -2,6 +2,11 @@
 
 #include "DX\DeviceResources.h"
 
+namespace DX
+{
+	class View;
+}
+
 class Scene;
 
 class Core final : public DX::IDeviceNotify
@@ -26,6 +31,7 @@ private:
 	void			CreateWindowSizeDependentResources();
 
 	DX::DeviceResources*	m_deviceResources; // The D3D objects
+	DX::View*				m_view; // Code relating the the camera
 
 	Scene*			m_scene; // An object that contains all the game world entities
 };

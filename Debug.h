@@ -26,6 +26,7 @@ do \
 	} \
 } while( 0 )
 
+
 #else
 
 #define DEBUG_MESSAGE( message, ... ) \

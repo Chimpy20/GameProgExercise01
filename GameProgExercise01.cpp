@@ -171,16 +171,32 @@ void WINAPI wWinMainCRTStartup()
 #ifdef __cplusplus
 extern "C"
 {
-	/*	#pragma function(memset)
-		void* __cdecl memset( _Out_writes_bytes_all_( count ) void* dest, _In_ int value, _In_ size_t count )
+	#pragma function(memset)
+	void* __cdecl memset( _Out_writes_bytes_all_( count ) void* dest, _In_ int value, _In_ size_t count )
+	{
+		char* bytes = (char*)dest;
+		while( count-- )
 		{
-			char* bytes = (char*)dest;
-			while( count-- )
+			*bytes++ = (char)value;
+		}
+		return dest;
+	}
+
+	void* __cdecl memcpy( _Out_writes_bytes_all_( _Size ) void* _Dst, _In_reads_bytes_( _Size ) void const* _Src, _In_ size_t _Size	)
+	{
+		char* pszDest = (char*)_Dst;
+		const char* pszSource = (const char*)_Src;
+		if( ( pszDest != NULL ) && ( pszSource != NULL ) )
+		{
+			while( _Size ) //till cnt
 			{
-				*bytes++ = (char)value;
+				//Copy byte by byte
+				*( pszDest++ ) = *( pszSource++ );
+				--_Size;
 			}
-			return dest;
-		}*/
+		}
+		return _Dst;
+	}
 
 	int _fltused = 0;
 
@@ -189,5 +205,14 @@ extern "C"
 		ASSERT( FALSE, "Pure virtual function called.\n" );
 		return 0;
 	}
+
+	//_declspec( dllexport )
+	void __cdecl _wassert(
+		_In_z_ wchar_t const* _Message,
+		_In_z_ wchar_t const* _File,
+		_In_   unsigned       _Line)
+	{
+	}
 }
+
 #endif //__cplusplus

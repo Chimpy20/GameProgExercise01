@@ -1,9 +1,13 @@
 #include "GameProgExercise01.h"
 #include "Core.h"
 #include "Scene\Scene.h"
+#include "DX\View.h"
+
+using namespace DirectX;
 
 Core::Core() noexcept( false ) : 
 	m_deviceResources( nullptr ),
+	m_view( nullptr ),
 	m_scene( nullptr )
 {
 	// DirectX Tool Kit supports all feature levels
@@ -11,10 +15,14 @@ Core::Core() noexcept( false ) :
 		DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_FORMAT_D24_UNORM_S8_UINT, 2,
 		D3D_FEATURE_LEVEL_9_1 );
 	m_deviceResources->RegisterDeviceNotify( this );
+
+	m_view = new DX::View( m_deviceResources );
 }
 
 Core::~Core()
 {
+	delete m_view;
+
 	delete m_deviceResources;
 }
 
@@ -29,12 +37,16 @@ void Core::Initialise( HWND window, int width, int height )
 	m_deviceResources->CreateWindowSizeDependentResources();
 	CreateWindowSizeDependentResources();
 
+	m_view->Initialise();
+
 	m_scene = new Scene();
 }
 
 // Clear up and perform any closing actions
 void Core::Shutdown()
 {
+	m_view->Shutdown();
+
 	delete m_scene;
 	m_scene = nullptr;
 }
@@ -51,6 +63,9 @@ void Core::Update()
 void Core::Render()
 {
 	Clear();
+
+	if( m_view != nullptr )
+		m_view->Refresh();
 
 	// Draw the scene
 	if( m_scene != nullptr )
