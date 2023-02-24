@@ -1,6 +1,9 @@
 #include "GameProgExercise01.h"
 #include "Utils\File.h"
 
+namespace utils
+{
+
 namespace file
 {
 
@@ -8,7 +11,7 @@ static const UINT32 BufferSize = 1024 * 1024;
 static unsigned char g_tempReadBuffer[ BufferSize ];
 
 
-HANDLE GetFileData( const char* const filename, void* outData )
+HANDLE GetFileData( const char* const filename, void** outData, DWORD* size )
 {
 	HANDLE fileHandle = CreateFileA( filename, GENERIC_READ,
 		FILE_SHARE_READ, NULL, OPEN_EXISTING,
@@ -27,7 +30,8 @@ HANDLE GetFileData( const char* const filename, void* outData )
 		ASSERT( result, "Unable to read from file %s.\n", filename );
 		if( result )
 		{
-			outData = g_tempReadBuffer;
+			*outData = g_tempReadBuffer;
+			*size = fileSize;
 		}
 	}
 
@@ -40,3 +44,5 @@ void CloseFile( const HANDLE fileHandle )
 }
 
 } // namespace file
+
+} // namespace utils

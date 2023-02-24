@@ -1,14 +1,24 @@
 #pragma once
 
+namespace scene
+{
+
+class TestObject;
+
 class Scene
 {
 public:
 	Scene();
+	~Scene();
+
+	void				Initialise();
+	void				Shutdown();
 
 	void				Update();
 	void				Render();
 
 private:
-
-	ID3D11Buffer*      m_constantBuffer;
+	TestObject*			m_testObject;
 };
+
+} // namespace scene

@@ -5,6 +5,8 @@
 
 using namespace DirectX;
 
+Core* Core::g_core = nullptr;
+
 Core::Core() noexcept( false ) : 
 	m_deviceResources( nullptr ),
 	m_view( nullptr ),
@@ -17,6 +19,9 @@ Core::Core() noexcept( false ) :
 	m_deviceResources->RegisterDeviceNotify( this );
 
 	m_view = new DX::View( m_deviceResources );
+
+	ASSERT( g_core == nullptr, "A core object alread exists.\n" );
+	g_core = this;
 }
 
 Core::~Core()
@@ -24,6 +29,8 @@ Core::~Core()
 	delete m_view;
 
 	delete m_deviceResources;
+
+	g_core = nullptr;
 }
 
 // Perform any one-time initialisation
@@ -39,7 +46,8 @@ void Core::Initialise( HWND window, int width, int height )
 
 	m_view->Initialise();
 
-	m_scene = new Scene();
+	m_scene = new scene::Scene();
+	m_scene->Initialise();
 }
 
 // Clear up and perform any closing actions
@@ -47,6 +55,7 @@ void Core::Shutdown()
 {
 	m_view->Shutdown();
 
+	m_scene->Shutdown();
 	delete m_scene;
 	m_scene = nullptr;
 }

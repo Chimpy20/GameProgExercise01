@@ -214,6 +214,7 @@
     <ClCompile Include="DX\View.cpp" />
     <ClCompile Include="GameProgExercise01.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Scene\TestObject.cpp" />
     <ClCompile Include="Utils\File.cpp" />
     <ClCompile Include="Utils\IO.cpp" />
     <ClCompile Include="Utils\Maths.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="DX\View.h" />
     <ClInclude Include="GameProgExercise01.h" />
     <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\TestObject.h" />
     <ClInclude Include="Utils\File.h" />
     <ClInclude Include="Utils\IO.h" />
     <ClInclude Include="Utils\Maths.h" />

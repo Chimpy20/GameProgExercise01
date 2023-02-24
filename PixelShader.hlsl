@@ -7,20 +7,20 @@
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //--------------------------------------------------------------------------------------
 
-struct Interpolants
+struct PS_INPUT
 {
     float4 position : SV_Position;
     float4 color    : COLOR0;
 };
 
-struct Pixel
+struct PS_OUTPUT
 {
     float4 color    : SV_Target;
 };
 
-Pixel main( Interpolants In )
+PS_OUTPUT main( PS_INPUT In )
 {
-    Pixel Out;
+	PS_OUTPUT Out;
     Out.color = In.color;
     return Out;
 }

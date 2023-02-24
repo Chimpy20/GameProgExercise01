@@ -34,7 +34,7 @@ void View::Initialise()
 	XMStoreFloat4x4( &m_worldMatrix, DirectX::XMMatrixIdentity() );
 
 	// Initialize the view matrix
-	static const DirectX::XMVECTORF32 eye = { 0.0f, 4.0f, -10.0f, 0.0f };
+	static const DirectX::XMVECTORF32 eye = { 0.0f, 10.0f, -5.0f, 0.0f };
 	static const DirectX::XMVECTORF32 at = { 0.0f, 0.0f, 0.0f, 0.0f };
 	static const DirectX::XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0 };
 	XMStoreFloat4x4( &m_viewMatrix, XMMatrixLookAtLH( eye, at, up ) );
@@ -63,7 +63,7 @@ void View::Refresh()
 	D3D11_MAPPED_SUBRESOURCE mapped;
 	HRESULT hr = deviceContext->Map( m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped );
 	ASSERT_HANDLE( hr );
-	memcpy( mapped.pData, &m_constantBuffer, sizeof( ConstantBuffer ) );
+	memcpy( mapped.pData, &sceneParameters, sizeof( ConstantBuffer ) );
 	deviceContext->Unmap( m_constantBuffer, 0 );
 
 	// Vertex shader needs view and projection matrices to perform vertex transform
@@ -72,6 +72,7 @@ void View::Refresh()
 
 void View::Shutdown()
 {
+	m_constantBuffer->Release();
 }
 
 } // namespace DX

@@ -54,11 +54,14 @@
     <ClCompile Include="Utils\Maths.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\File.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DX\View.cpp">
       <Filter>Source Files\DX</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\File.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\TestObject.cpp">
+      <Filter>Source Files\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,11 +101,14 @@
     <ClInclude Include="Utils\Maths.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\File.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DX\View.h">
       <Filter>Source Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\TestObject.h">
+      <Filter>Source Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\File.h">
+      <Filter>Source Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
