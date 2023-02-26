@@ -10,9 +10,14 @@ class View
 public:
 	struct ConstantBuffer
 	{
-		DirectX::XMMATRIX worldMatrix;
 		DirectX::XMMATRIX viewMatrix;
 		DirectX::XMMATRIX projectionMatrix;
+	};
+	static_assert( ( sizeof( ConstantBuffer ) % 16 ) == 0, "Constant buffer must always be 16-byte aligned" );
+
+	struct WorldConstantBuffer
+	{
+		DirectX::XMMATRIX worldMatrix;
 	};
 	static_assert( ( sizeof( ConstantBuffer ) % 16 ) == 0, "Constant buffer must always be 16-byte aligned" );
 

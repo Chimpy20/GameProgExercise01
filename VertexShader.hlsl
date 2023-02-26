@@ -13,9 +13,13 @@
 //--------------------------------------------------------------------------------------
 cbuffer Constants : register( b0 )
 {
-	float4x4 mWorld;
 	float4x4 mView;
 	float4x4 mProjection;
+}
+
+cbuffer Constants : register( b1 )
+{
+	float4x4 mWorld;
 }
 
 struct VS_INPUT

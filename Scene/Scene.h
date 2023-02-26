@@ -5,6 +5,7 @@ namespace scene
 
 class TestObject;
 
+// Object containing all the entities and related objects in the scene
 class Scene
 {
 public:
@@ -18,7 +19,8 @@ public:
 	void				Render();
 
 private:
-	TestObject*			m_testObject;
+	TestObject*			m_testObject1;
+	TestObject*			m_testObject2;
 };
 
 } // namespace scene

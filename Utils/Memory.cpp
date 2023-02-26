@@ -63,12 +63,12 @@ void* operator new[]( size_t size )
 	return memory::Heap::Alloc( size );
 }
 
-void operator delete( void* p )
+void __CRTDECL operator delete( void* p )
 {
 	memory::Heap::Free( p );
 }
 
-void operator delete( void* p, unsigned __int64 size )
+void __CRTDECL operator delete( void* p, size_t size )
 {
 	memory::Heap::Free( p );
 }

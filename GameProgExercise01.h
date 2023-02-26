@@ -68,7 +68,7 @@
 #include "Utils/File.h"
 #include "Debug.h"
 
-
+#ifdef _DEBUG
 _Check_return_ _CRT_JIT_INTRINSIC inline double fabs( _In_ double _Xx )
 {
 	if( _Xx < 0.0 )
@@ -78,6 +78,7 @@ _Check_return_ _CRT_JIT_INTRINSIC inline double fabs( _In_ double _Xx )
 
 	return _Xx;
 }
+#endif // _DEBUG
 
 /*namespace DX
 {

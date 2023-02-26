@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Scene\Entity.h"
+
 namespace scene
 {
 
-class TestObject
+class TestObject : public Entity
 {
 public:
 	TestObject();
@@ -16,11 +18,6 @@ public:
 
 private:
 	static const UINT NumVertices = 3;
-
-	ID3D11InputLayout*	m_inputLayout;
-	ID3D11Buffer*		m_vertexBuffer;
-	ID3D11VertexShader* m_vertexShader;
-	ID3D11PixelShader*	m_pixelShader;
 
 };
 

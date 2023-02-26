@@ -43,30 +43,34 @@ void View::Initialise()
 	auto size = m_deviceResources->GetOutputSize();
 	XMMATRIX projection = XMMatrixPerspectiveFovLH( XM_PIDIV4, float( size.right ) / float( size.bottom ), 0.01f, 100.0f );
 	XMStoreFloat4x4( &m_projectionMatrix, projection );
+
+
+
+	
 }
 
 void View::Refresh()
 {
+	ASSERT( m_deviceResources != nullptr, "Device resources doesn't exist.\n" );
+	ID3D11DeviceContext* const deviceContext = m_deviceResources->GetD3DDeviceContext();
+
+	D3D11_MAPPED_SUBRESOURCE mapped;
+	HRESULT hr = S_OK;
+
 	// Set the per-frame constants
 	ConstantBuffer sceneParameters = {};
 
 	// Shaders compiled with default row-major matrices
-	sceneParameters.worldMatrix = XMMatrixTranspose( XMLoadFloat4x4( &m_worldMatrix ) );
 	sceneParameters.viewMatrix = XMMatrixTranspose( XMLoadFloat4x4( &m_viewMatrix ) );
 	sceneParameters.projectionMatrix = XMMatrixTranspose( XMLoadFloat4x4( &m_projectionMatrix ) );
 
-	ASSERT( m_deviceResources != nullptr, "Device resources doesn't exist.\n" );
-	ID3D11DeviceContext* const deviceContext = m_deviceResources->GetD3DDeviceContext();
-
 	ASSERT( m_constantBuffer != nullptr, "Constant buffer doesn't exist. Has View::Initialise() been called?\n" );
 
-	D3D11_MAPPED_SUBRESOURCE mapped;
-	HRESULT hr = deviceContext->Map( m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped );
+	hr = deviceContext->Map( m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped );
 	ASSERT_HANDLE( hr );
 	memcpy( mapped.pData, &sceneParameters, sizeof( ConstantBuffer ) );
 	deviceContext->Unmap( m_constantBuffer, 0 );
 
-	// Vertex shader needs view and projection matrices to perform vertex transform
 	deviceContext->VSSetConstantBuffers( 0, 1, &m_constantBuffer );
 }
 
