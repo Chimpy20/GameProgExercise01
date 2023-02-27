@@ -136,7 +136,7 @@ void Entity::SetPosition( const DirectX::XMVECTOR position )
 	m_position.f[ 3 ] = 1.0f;
 }
 
-void Entity::SetOrientation( const DirectX::XMMATRIX orientation )
+void Entity::SetOrientation( const DirectX::XMMATRIX& orientation )
 {
 	m_orientation = orientation;
 }

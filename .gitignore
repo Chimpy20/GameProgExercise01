@@ -98,9 +98,11 @@ StyleCopReport.xml
 *.svclog
 *.scc
 *.cso
+*.exp
 
 # Executables
 *.exe
+*.lib
 
 # Chutzpah Test files
 _Chutzpah*

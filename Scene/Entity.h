@@ -23,7 +23,7 @@ public:
 	void					Render();
 
 	void					SetPosition( const DirectX::XMVECTOR position );
-	void					SetOrientation( const DirectX::XMMATRIX orientation );
+	void					SetOrientation( const DirectX::XMMATRIX& orientation );
 
 protected:
 	ID3D11InputLayout*		m_inputLayout;
