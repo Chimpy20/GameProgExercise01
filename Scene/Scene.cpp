@@ -4,6 +4,7 @@
 #include "Utils\File.h"
 #include "Scene\Scene.h"
 #include "Scene\Entities\TestObject.h"
+#include "DX\Input.h"
 
 using namespace DirectX;
 
@@ -54,6 +55,12 @@ void Scene::Update()
 {
 	m_testObject1->Update();
 	m_testObject2->Update();
+
+	/*Core* const core = Core::Get();
+	DX::Input* input = core->GetInput();
+	const float leftRight = input->GetLeftRight();
+	io::OutputMessage( "%.2f\n", leftRight );*/
+
 }
 
 void Scene::Render()

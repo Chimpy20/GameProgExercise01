@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Scene\Scene.h"
 #include "DX\View.h"
+#include "DX\Input.h"
 
 using namespace DirectX;
 
@@ -19,6 +20,7 @@ Core::Core() noexcept( false ) :
 	m_deviceResources->RegisterDeviceNotify( this );
 
 	m_view = new DX::View( m_deviceResources );
+	m_input = new DX::Input();
 
 	ASSERT( g_core == nullptr, "A core object alread exists.\n" );
 	g_core = this;
@@ -26,6 +28,7 @@ Core::Core() noexcept( false ) :
 
 Core::~Core()
 {
+	delete m_input;
 	delete m_view;
 
 	delete m_deviceResources;
@@ -44,6 +47,7 @@ void Core::Initialise( HWND window, int width, int height )
 	m_deviceResources->CreateWindowSizeDependentResources();
 	CreateWindowSizeDependentResources();
 
+	m_input->Initialise();
 	m_view->Initialise();
 
 	m_scene = new scene::Scene();
@@ -54,6 +58,7 @@ void Core::Initialise( HWND window, int width, int height )
 void Core::Shutdown()
 {
 	m_view->Shutdown();
+	m_input->Shutdown();
 
 	m_scene->Shutdown();
 	delete m_scene;
@@ -63,6 +68,10 @@ void Core::Shutdown()
 // Each frame update
 void Core::Update()
 {
+	// Update any input detection
+	if( m_input != nullptr )
+		m_input->Update();
+
 	// Update the scene
 	if( m_scene != nullptr )
 		m_scene->Update();

@@ -69,6 +69,9 @@
     <ClCompile Include="Scene\Entity.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="DX\Input.cpp">
+      <Filter>Source Files\DX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Entity.h">
       <Filter>Source Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DX\Input.h">
+      <Filter>Source Files\DX</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

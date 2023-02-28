@@ -217,6 +217,7 @@
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="DX\DeviceResources.cpp" />
+    <ClCompile Include="DX\Input.cpp" />
     <ClCompile Include="DX\View.cpp" />
     <ClCompile Include="GameProgExercise01.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -244,6 +245,7 @@
     <ClInclude Include="Core.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="DX\DeviceResources.h" />
+    <ClInclude Include="DX\Input.h" />
     <ClInclude Include="DX\View.h" />
     <ClInclude Include="GameProgExercise01.h" />
     <ClInclude Include="Scene\Entities\TestObject.h" />

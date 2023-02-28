@@ -5,6 +5,8 @@ namespace DX
 
 class DeviceResources;
 
+// Class that encapsulates some viewport and shader constant functionality
+// probably best to have separate camera class
 class View
 {
 public:

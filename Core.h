@@ -2,9 +2,11 @@
 
 #include "DX\DeviceResources.h"
 
+// Forward declarations
 namespace DX
 {
 	class View;
+	class Input;
 }
 
 namespace scene
@@ -12,6 +14,7 @@ namespace scene
 	class Scene;
 }
 
+// Handles everything in the demo, the "root" object in some ways
 class Core final : public DX::IDeviceNotify
 {
 public:
@@ -26,6 +29,11 @@ public:
 	const DX::DeviceResources*	GetDeviceResources() const
 	{
 		return m_deviceResources;
+	}
+
+	DX::Input*				GetInput() const
+	{
+		return m_input;
 	}
 
 	void					Initialise( HWND window, int width, int height );
@@ -47,6 +55,7 @@ private:
 
 	DX::DeviceResources*	m_deviceResources; // The D3D objects
 	DX::View*				m_view; // Code relating the the camera
+	DX::Input*				m_input; // Wraps input handling
 
 	scene::Scene*			m_scene; // An object that contains all the game world entities
 };

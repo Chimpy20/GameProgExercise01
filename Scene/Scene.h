@@ -6,7 +6,7 @@ namespace scene
 class TestObject;
 
 // Object containing all the entities and related objects in the scene
-class Scene
+class Scene sealed
 {
 public:
 	Scene();

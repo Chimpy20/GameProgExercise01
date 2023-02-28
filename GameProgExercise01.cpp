@@ -1,6 +1,7 @@
 #include "GameProgExercise01.h"
 #include "Core.h"
-#include "Containers/List.h"
+#include "Containers\List.h"
+#include "DX\Input.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -114,7 +115,8 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 	//PAINTSTRUCT ps;
 	//HDC hdc;
 
-	//Core* const core = reinterpret_cast<Core*>( GetWindowLongPtr( hWnd, GWLP_USERDATA ) );
+	Core* const core = Core::Get();
+	DX::Input* const input = core->GetInput();
 
 	switch( message )
 	{
@@ -127,6 +129,11 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 
 		case WM_DESTROY:
 			PostQuitMessage( 0 );
+			break;
+
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+			input->HandleSystemMessage( message, wParam );
 			break;
 
 		default:
