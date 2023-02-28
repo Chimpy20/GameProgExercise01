@@ -172,7 +172,8 @@ public:
 
 	inline void push_back( T t )
 	{
-		m_head.push_back( new Node<T>( t ) );
+		Node<T>* newNode = new Node<T>( t );
+		m_head.push_back( newNode );
 		++m_size;
 	}
 

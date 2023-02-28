@@ -20,6 +20,9 @@ int WINAPI wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 	memory::Heap::Create();
 
+	// This needs to be done after the heap is created
+	utils::file::InitialiseFileSystem();
+
 	if( !XMVerifyCPUSupport() )
 		return 1;
 
@@ -96,6 +99,8 @@ int WINAPI wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	core->Shutdown();
 
 	delete core;
+
+	utils::file::ShutdownFileSystem();
 
 	CoUninitialize();
 
@@ -214,6 +219,12 @@ extern "C"
 		_In_z_ wchar_t const* _File,
 		_In_   unsigned       _Line)
 	{
+	}
+
+	typedef void ( *AtExitFunc )( void );
+	int __cdecl atexit( AtExitFunc f )
+	{
+		return 0;
 	}
 }
 
