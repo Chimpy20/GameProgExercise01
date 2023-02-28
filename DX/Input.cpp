@@ -31,6 +31,7 @@ BOOL Input::HandleSystemMessage( const UINT message, const WPARAM wParam )
 {
 	BOOL unhandled = FALSE;
 
+	// TODO: Improve this input detection
 	switch( message )
 	{
 		case WM_KEYDOWN:
@@ -52,6 +53,23 @@ BOOL Input::HandleSystemMessage( const UINT message, const WPARAM wParam )
 					break;
 			}
 			break;
+
+		case WM_KEYUP:
+			switch( wParam )
+			{
+				case VK_LEFT:
+				case VK_RIGHT:
+					m_leftRight = 0.0f;
+					break;
+				case VK_UP:
+				case VK_DOWN:
+					m_upDown = 0.0f;
+					break;
+				default:
+					break;
+			}
+			break;
+
 		default:
 			unhandled = TRUE;
 			break;
