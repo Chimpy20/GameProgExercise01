@@ -24,6 +24,7 @@ public:
 
 	void					SetPosition( const DirectX::XMVECTOR position );
 	void					SetOrientation( const DirectX::XMMATRIX& orientation );
+	void					SetScale( const float scale );
 
 protected:
 	ID3D11InputLayout*		m_inputLayout;
@@ -34,6 +35,7 @@ protected:
 
 	DirectX::XMVECTORF32	m_position;
 	DirectX::XMMATRIX		m_orientation;
+	float					m_scale;
 };
 
 } // namespace scene

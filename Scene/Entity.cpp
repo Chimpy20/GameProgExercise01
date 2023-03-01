@@ -19,6 +19,7 @@ Entity::Entity() :
 	m_orientation = XMMatrixIdentity();
 	m_position.v = XMVectorZero();
 	m_position.f[ 3 ] = 1.0f;
+	m_scale = 1.0f;
 }
 
 Entity::~Entity()
@@ -103,11 +104,15 @@ void Entity::Render()
 	// Get the orientation matrix ready for a world matrix
 	XMMATRIX worldMatrix = m_orientation;
 
+	XMMATRIX scaleMatrix = XMMatrixScaling( m_scale, m_scale, m_scale );
+
+	XMMATRIX scaledWorldMatrix = XMMatrixMultiply( worldMatrix, scaleMatrix );
+
 	// Set the position row of the world matrix
-	worldMatrix.r[ 3 ] = m_position;
+	scaledWorldMatrix.r[ 3 ] = m_position;
 
 	// Matrix needs to be transposed for the vertex shader
-	XMMATRIX worldMatrixTransposed = XMMatrixTranspose( worldMatrix );
+	XMMATRIX worldMatrixTransposed = XMMatrixTranspose( scaledWorldMatrix );
 
 	ASSERT( m_constantBuffer != nullptr, "Constant buffer doesn't exist. Has View::Initialise() been called?\n" );
 
@@ -139,6 +144,11 @@ void Entity::SetPosition( const DirectX::XMVECTOR position )
 void Entity::SetOrientation( const DirectX::XMMATRIX& orientation )
 {
 	m_orientation = orientation;
+}
+
+void Entity::SetScale( const float scale )
+{
+	m_scale = scale;
 }
 
 } //namespace scene
