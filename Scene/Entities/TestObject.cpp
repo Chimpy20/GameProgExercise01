@@ -45,6 +45,7 @@ void TestObject::Initialise()
 		&m_vertexBuffer );
 	ASSERT_HANDLE( hr );
 
+	SetScale( 1.0f );
 }
 
 void TestObject::Shutdown()
