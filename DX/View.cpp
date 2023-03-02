@@ -9,8 +9,11 @@ namespace DX
 
 View::View( DeviceResources* deviceResources ) :
 	m_deviceResources( deviceResources ),
-	m_constantBuffer( nullptr )
+	m_vpConstantBuffer( nullptr )
 {
+	// Initialize the world matrix
+	m_viewMatrix = DirectX::XMMatrixIdentity();
+	m_projectionMatrix = DirectX::XMMatrixIdentity();
 }
 
 View::~View()
@@ -26,27 +29,20 @@ void View::Initialise()
 	deviceContext->GetDevice( &device );
 	ASSERT( device != nullptr, "Unable to get D3D device.\n" );
 
-	CD3D11_BUFFER_DESC bufferDesc( sizeof( ConstantBuffer ), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE );
-	device->CreateBuffer( &bufferDesc, nullptr, &m_constantBuffer );
-	ASSERT( m_constantBuffer != nullptr, "Unable to create constant buffer.\n" );
-
-	// Initialize the world matrix
-	XMStoreFloat4x4( &m_worldMatrix, DirectX::XMMatrixIdentity() );
+	CD3D11_BUFFER_DESC bufferDesc( sizeof( VPConstantBuffer ), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE );
+	device->CreateBuffer( &bufferDesc, nullptr, &m_vpConstantBuffer );
+	ASSERT( m_vpConstantBuffer != nullptr, "Unable to create constant buffer.\n" );
 
 	// Initialize the view matrix
 	static const DirectX::XMVECTORF32 eye = { 0.0f, 10.0f, -5.0f, 0.0f };
 	static const DirectX::XMVECTORF32 at = { 0.0f, 0.0f, 0.0f, 0.0f };
 	static const DirectX::XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0 };
-	XMStoreFloat4x4( &m_viewMatrix, XMMatrixLookAtLH( eye, at, up ) );
+	m_viewMatrix = XMMatrixLookAtLH( eye, at, up );
 
 	// Initialize the projection matrix
 	auto size = m_deviceResources->GetOutputSize();
 	XMMATRIX projection = XMMatrixPerspectiveFovLH( XM_PIDIV4, float( size.right ) / float( size.bottom ), 0.01f, 100.0f );
-	XMStoreFloat4x4( &m_projectionMatrix, projection );
-
-
-
-	
+	m_projectionMatrix = projection;	
 }
 
 void View::Refresh()
@@ -58,25 +54,26 @@ void View::Refresh()
 	HRESULT hr = S_OK;
 
 	// Set the per-frame constants
-	ConstantBuffer sceneParameters = {};
+	VPConstantBuffer vpConstants = {};
+
+	XMMATRIX viewProjection = XMMatrixMultiply( m_viewMatrix, m_projectionMatrix );
 
 	// Shaders compiled with default row-major matrices
-	sceneParameters.viewMatrix = XMMatrixTranspose( XMLoadFloat4x4( &m_viewMatrix ) );
-	sceneParameters.projectionMatrix = XMMatrixTranspose( XMLoadFloat4x4( &m_projectionMatrix ) );
+	vpConstants.viewProjectionMatrix = XMMatrixTranspose( viewProjection );
 
-	ASSERT( m_constantBuffer != nullptr, "Constant buffer doesn't exist. Has View::Initialise() been called?\n" );
+	ASSERT( m_vpConstantBuffer != nullptr, "Constant buffer doesn't exist. Has View::Initialise() been called?\n" );
 
-	hr = deviceContext->Map( m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped );
+	hr = deviceContext->Map( m_vpConstantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped );
 	ASSERT_HANDLE( hr );
-	memcpy( mapped.pData, &sceneParameters, sizeof( ConstantBuffer ) );
-	deviceContext->Unmap( m_constantBuffer, 0 );
+	memcpy( mapped.pData, &vpConstants, sizeof( VPConstantBuffer ) );
+	deviceContext->Unmap( m_vpConstantBuffer, 0 );
 
-	deviceContext->VSSetConstantBuffers( 0, 1, &m_constantBuffer );
+	deviceContext->VSSetConstantBuffers( 0, 1, &m_vpConstantBuffer );
 }
 
 void View::Shutdown()
 {
-	m_constantBuffer->Release();
+	m_vpConstantBuffer->Release();
 }
 
 } // namespace DX

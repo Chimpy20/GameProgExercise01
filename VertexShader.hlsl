@@ -13,8 +13,7 @@
 //--------------------------------------------------------------------------------------
 cbuffer Constants : register( b0 )
 {
-	float4x4 mView;
-	float4x4 mProjection;
+	float4x4 mViewProjection;
 }
 
 cbuffer Constants : register( b1 )
@@ -40,8 +39,7 @@ VS_OUTPUT main( VS_INPUT input )
 	output.color = input.color;
 	float4 inputPos = float4(input.position, 1.0f);
 	output.position = mul( inputPos, mWorld );
-	output.position = mul( output.position, mView );
-	output.position = mul( output.position, mProjection );
+	output.position = mul( output.position, mViewProjection );
 
 	return output;
 }

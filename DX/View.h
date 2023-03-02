@@ -10,18 +10,17 @@ class DeviceResources;
 class View
 {
 public:
-	struct ConstantBuffer
+	struct VPConstantBuffer
 	{
-		DirectX::XMMATRIX viewMatrix;
-		DirectX::XMMATRIX projectionMatrix;
+		DirectX::XMMATRIX viewProjectionMatrix;
 	};
-	static_assert( ( sizeof( ConstantBuffer ) % 16 ) == 0, "Constant buffer must always be 16-byte aligned" );
+	static_assert( ( sizeof( VPConstantBuffer ) % 16 ) == 0, "Constant buffer must always be 16-byte aligned" );
 
 	struct WorldConstantBuffer
 	{
 		DirectX::XMMATRIX worldMatrix;
 	};
-	static_assert( ( sizeof( ConstantBuffer ) % 16 ) == 0, "Constant buffer must always be 16-byte aligned" );
+	static_assert( ( sizeof( WorldConstantBuffer ) % 16 ) == 0, "Constant buffer must always be 16-byte aligned" );
 
 	View( DeviceResources* const deviceResources );
 	~View();
@@ -32,11 +31,10 @@ public:
 
 private:
 	DeviceResources*				m_deviceResources;
-	ID3D11Buffer*					m_constantBuffer;
+	ID3D11Buffer*					m_vpConstantBuffer;
 
-	DirectX::XMFLOAT4X4				m_worldMatrix;
-	DirectX::XMFLOAT4X4				m_viewMatrix;
-	DirectX::XMFLOAT4X4				m_projectionMatrix;
+	DirectX::XMMATRIX				m_viewMatrix;
+	DirectX::XMMATRIX				m_projectionMatrix;
 };
 
 } // namespace DX
