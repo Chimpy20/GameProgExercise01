@@ -53,12 +53,12 @@ void Heap::Free( void* p )
 } // namespace memory
 
 
-void* operator new( size_t size )
+void* __CRTDECL  operator new( size_t size )
 {
 	return memory::Heap::Alloc( size );
 }
 
-void* operator new[]( size_t size )
+void* __CRTDECL operator new[]( size_t size )
 {
 	return memory::Heap::Alloc( size );
 }

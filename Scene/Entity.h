@@ -25,6 +25,7 @@ public:
 	// Mutators
 	void						SetPosition( const DirectX::XMVECTOR position );
 	void						SetOrientation( const DirectX::XMMATRIX& orientation );
+	void						SetOrientation( const DirectX::XMVECTOR& orientation );
 	void						SetScale( const float scale );
 
 	// Accessors
@@ -42,6 +43,9 @@ public:
 	{
 		return m_orientation;
 	}
+
+	const DirectX::XMVECTOR GetOrientationAsVector() const;
+
 
 protected:
 	ID3D11InputLayout*			m_inputLayout;

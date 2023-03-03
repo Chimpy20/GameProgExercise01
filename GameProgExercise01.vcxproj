@@ -225,6 +225,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Scene\Camera.cpp" />
     <ClCompile Include="Scene\Entities\TestObject.cpp" />
     <ClCompile Include="Scene\Entity.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="DX\Input.h" />
     <ClInclude Include="DX\View.h" />
     <ClInclude Include="GameProgExercise01.h" />
+    <ClInclude Include="Scene\Camera.h" />
     <ClInclude Include="Scene\Entities\TestObject.h" />
     <ClInclude Include="Scene\Entity.h" />
     <ClInclude Include="Scene\Scene.h" />

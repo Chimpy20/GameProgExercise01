@@ -29,12 +29,29 @@ public:
 	void							Refresh();
 	void							Shutdown();
 
+	inline void						SetViewPosition( const DirectX::XMVECTOR viewPosition )
+	{
+		m_viewPosition = viewPosition;
+	}
+
+	inline void						SetViewDirection( const DirectX::XMVECTOR viewDirection )
+	{
+#ifdef _DEBUG
+		const DirectX::XMVECTOR vecLength = DirectX::XMVector3LengthEst( viewDirection );
+		ASSERT( ( vecLength.m128_f32[ 0 ] < ( 1.0f + Epsilon ) ) && ( vecLength.m128_f32[ 0 ] > ( 1.0f - Epsilon ) ), "View direction vector isn't normalised.\n" );
+#endif
+		m_viewDirection = viewDirection;
+	}
+
 private:
 	DeviceResources*				m_deviceResources;
 	ID3D11Buffer*					m_vpConstantBuffer;
 
 	DirectX::XMMATRIX				m_viewMatrix;
 	DirectX::XMMATRIX				m_projectionMatrix;
+
+	DirectX::XMVECTOR				m_viewPosition;
+	DirectX::XMVECTOR				m_viewDirection;
 };
 
 } // namespace DX

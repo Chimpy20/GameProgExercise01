@@ -1,6 +1,6 @@
 #pragma once
 
-#pragma warning( disable : 4100 4273 )
+#pragma warning( disable : 4100 4273 28252 )
 
 #include <WinSDKVer.h>
 //#define _WIN32_WINNT 0x0602 // Ensure we are using XAudio 2.8!
@@ -66,6 +66,7 @@
 #include "Utils/Memory.h"
 #include "Utils/Timers.h"
 #include "Utils/File.h"
+#include "Utils/Maths.h"
 #include "Debug.h"
 
 #ifdef _DEBUG
@@ -79,6 +80,8 @@ _Check_return_ _CRT_JIT_INTRINSIC inline double fabs( _In_ double _Xx )
 	return _Xx;
 }
 #endif // _DEBUG
+
+static const float Epsilon = 0.001f;
 
 /*namespace DX
 {

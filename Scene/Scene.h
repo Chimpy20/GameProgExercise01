@@ -4,6 +4,7 @@ namespace scene
 {
 
 class TestObject;
+class Camera;
 
 // Object containing all the entities and related objects in the scene
 class Scene sealed
@@ -19,6 +20,7 @@ public:
 	void				Render();
 
 private:
+	Camera*				m_camera;
 	TestObject*			m_testObject1;
 	TestObject*			m_testObject2;
 };

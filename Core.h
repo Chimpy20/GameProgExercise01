@@ -36,6 +36,11 @@ public:
 		return m_input;
 	}
 
+	DX::View*				GetView() const
+	{
+		return m_view;
+	}
+
 	void					Initialise( HWND window, int width, int height );
 	void					Shutdown();
 

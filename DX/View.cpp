@@ -33,12 +33,6 @@ void View::Initialise()
 	device->CreateBuffer( &bufferDesc, nullptr, &m_vpConstantBuffer );
 	ASSERT( m_vpConstantBuffer != nullptr, "Unable to create constant buffer.\n" );
 
-	// Initialize the view matrix
-	static const DirectX::XMVECTORF32 eye = { 0.0f, 10.0f, -5.0f, 0.0f };
-	static const DirectX::XMVECTORF32 at = { 0.0f, 0.0f, 0.0f, 0.0f };
-	static const DirectX::XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0 };
-	m_viewMatrix = XMMatrixLookAtLH( eye, at, up );
-
 	// Initialize the projection matrix
 	auto size = m_deviceResources->GetOutputSize();
 	XMMATRIX projection = XMMatrixPerspectiveFovLH( XM_PIDIV4, float( size.right ) / float( size.bottom ), 0.01f, 100.0f );
@@ -47,6 +41,10 @@ void View::Initialise()
 
 void View::Refresh()
 {
+	static const DirectX::XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0 };
+
+	m_viewMatrix = XMMatrixLookToLH( m_viewPosition, m_viewDirection, up );
+
 	ASSERT( m_deviceResources != nullptr, "Device resources doesn't exist.\n" );
 	ID3D11DeviceContext* const deviceContext = m_deviceResources->GetD3DDeviceContext();
 
