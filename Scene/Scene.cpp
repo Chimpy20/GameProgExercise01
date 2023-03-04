@@ -5,6 +5,7 @@
 #include "Scene\Scene.h"
 #include "Scene\Entities\TestObject.h"
 #include "DX\Input.h"
+#include "DX\View.h"
 
 using namespace DirectX;
 
@@ -27,6 +28,13 @@ Scene::~Scene()
 
 void Scene::Initialise()
 {
+	// Replace this with some proper camera code
+	Core* const core = Core::Get();
+	DX::View* const view = core->GetView();
+	view->SetViewPosition( XMVECTOR{ -5.0f, 10.0f, 5.0f, 0.0f } );
+	XMVECTOR viewDirection = XMVector3Normalize( XMVECTOR{ 5.0f, -10.0f, -5.0f, 0.0f } );
+	view->SetViewDirection( viewDirection );
+
 	XMVECTOR position;
 	XMMATRIX orientation;
 

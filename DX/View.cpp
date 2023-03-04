@@ -12,8 +12,12 @@ View::View( DeviceResources* deviceResources ) :
 	m_vpConstantBuffer( nullptr )
 {
 	// Initialize the world matrix
-	m_viewMatrix = DirectX::XMMatrixIdentity();
-	m_projectionMatrix = DirectX::XMMatrixIdentity();
+	m_viewMatrix = XMMatrixIdentity();
+	m_projectionMatrix = XMMatrixIdentity();
+
+	m_viewPosition = XMVectorZero();
+	m_viewDirection = XMVECTOR{ -1.0f, 1.0f, 1.0f, 0.0f };
+	m_viewDirection = XMVector3Normalize( m_viewDirection );
 }
 
 View::~View()
