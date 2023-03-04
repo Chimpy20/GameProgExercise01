@@ -72,6 +72,9 @@
     <ClCompile Include="DX\Input.cpp">
       <Filter>Source Files\DX</Filter>
     </ClCompile>
+    <ClCompile Include="crtfuncs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -124,6 +127,9 @@
     </ClInclude>
     <ClInclude Include="DX\Input.h">
       <Filter>Source Files\DX</Filter>
+    </ClInclude>
+    <ClInclude Include="crtfuncs.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

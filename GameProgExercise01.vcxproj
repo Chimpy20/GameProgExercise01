@@ -216,6 +216,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp" />
+    <ClCompile Include="crtfuncs.cpp" />
     <ClCompile Include="DX\DeviceResources.cpp" />
     <ClCompile Include="DX\Input.cpp" />
     <ClCompile Include="DX\View.cpp" />
@@ -225,6 +226,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Scene\Entities\Ground.cpp" />
     <ClCompile Include="Scene\Entities\TestObject.cpp" />
     <ClCompile Include="Scene\Entity.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -243,11 +245,13 @@
   <ItemGroup>
     <ClInclude Include="Containers\List.h" />
     <ClInclude Include="Core.h" />
+    <ClInclude Include="crtfuncs.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="DX\DeviceResources.h" />
     <ClInclude Include="DX\Input.h" />
     <ClInclude Include="DX\View.h" />
     <ClInclude Include="GameProgExercise01.h" />
+    <ClInclude Include="Scene\Entities\Ground.h" />
     <ClInclude Include="Scene\Entities\TestObject.h" />
     <ClInclude Include="Scene\Entity.h" />
     <ClInclude Include="Scene\Scene.h" />

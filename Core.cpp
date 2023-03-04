@@ -37,14 +37,18 @@ Core::~Core()
 }
 
 // Perform any one-time initialisation
-void Core::Initialise( HWND window, int width, int height )
+bool Core::Initialise( HWND window, int width, int height )
 {
 	m_deviceResources->SetWindow( window, width, height );
 
-	m_deviceResources->CreateDeviceResources();
+	if( m_deviceResources->CreateDeviceResources() )
+		return true;
+
 	CreateDeviceDependentResources();
 
-	m_deviceResources->CreateWindowSizeDependentResources();
+	if( m_deviceResources->CreateWindowSizeDependentResources() )
+		return true;
+
 	CreateWindowSizeDependentResources();
 
 	m_input->Initialise();
@@ -52,6 +56,8 @@ void Core::Initialise( HWND window, int width, int height )
 
 	m_scene = new scene::Scene();
 	m_scene->Initialise();
+
+	return false;
 }
 
 // Clear up and perform any closing actions
