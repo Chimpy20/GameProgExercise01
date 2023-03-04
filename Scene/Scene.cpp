@@ -1,11 +1,12 @@
 #include "GameProgExercise01.h"
 #include "DX\DeviceResources.h"
+#include "DX\Input.h"
 #include "Core.h"
 #include "Utils\File.h"
 #include "Scene\Scene.h"
 #include "Scene\Camera.h"
 #include "Scene\Entities\TestObject.h"
-#include "DX\Input.h"
+#include "Scene\Entities\Ground.h"
 
 using namespace DirectX;
 
@@ -15,18 +16,26 @@ namespace scene
 Scene::Scene() :
 	m_camera( nullptr ),
 	m_testObject1( nullptr ),
-	m_testObject2( nullptr )
+	m_testObject2( nullptr ),
+	m_ground( nullptr )
 {
 	m_camera = new Camera();
 	m_testObject1 = new TestObject();
 	m_testObject2 = new TestObject();
+
+	m_ground = new Ground();
 }
 
 Scene::~Scene()
 {
-	delete m_camera;
-	delete m_testObject1;
-	delete m_testObject2;
+	if( m_camera != nullptr )
+		delete m_camera;
+	if( m_testObject1 != nullptr )
+		delete m_testObject1;
+	if( m_testObject2 != nullptr )
+		delete m_testObject2;
+	if( m_ground != nullptr )
+		delete m_ground;
 }
 
 void Scene::Initialise()
@@ -52,12 +61,19 @@ void Scene::Initialise()
 	position = XMVectorSet( 2.0f, 0.0f, 0.0f, 0.0f );
 	m_testObject2->SetPosition( position );
 	m_testObject2->SetOrientation( orientation );
+
+	m_ground->Initialise();
 }
 
 void Scene::Shutdown()
 {
-	m_testObject2->Shutdown();
-	m_testObject1->Shutdown();
+	if( m_testObject2 != nullptr )
+		m_testObject2->Shutdown();
+	if( m_testObject1 != nullptr )
+		m_testObject1->Shutdown();
+
+	if( m_ground != nullptr )
+		m_ground->Shutdown();
 }
 
 void Scene::Update()
@@ -72,6 +88,8 @@ void Scene::Render()
 {
 	m_testObject1->Render();
 	m_testObject2->Render();
+
+	m_ground->Render();
 }
 
 } // namespace scene
