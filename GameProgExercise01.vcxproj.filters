@@ -75,6 +75,12 @@
     <ClCompile Include="Scene\Camera.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\Entities\Ground.cpp">
+      <Filter>Source Files\Scene\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="crtfuncs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -130,6 +136,12 @@
     </ClInclude>
     <ClInclude Include="Scene\Camera.h">
       <Filter>Source Files\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Entities\Ground.h">
+      <Filter>Source Files\Scene\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="crtfuncs.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

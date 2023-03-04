@@ -19,6 +19,8 @@ int WINAPI wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	UNREFERENCED_PARAMETER( hPrevInstance );
 	UNREFERENCED_PARAMETER( lpCmdLine );
 
+	bool error = false;
+
 	memory::Heap::Create();
 
 	// This needs to be done after the heap is created
@@ -65,39 +67,55 @@ int WINAPI wWinMain( _In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 			nullptr );
 
 		if( !hWnd )
-			return 1;
+			error = true;
 
-		ShowWindow( hWnd, nCmdShow );
+		if( !error )
+		{
+			ShowWindow( hWnd, nCmdShow );
 
-		SetWindowLongPtr( hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>( core ) );
+			SetWindowLongPtr( hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>( core ) );
 
-		GetClientRect( hWnd, &rc );
+			GetClientRect( hWnd, &rc );
 
-		core->Initialise( hWnd, rc.right - rc.left, rc.bottom - rc.top );
+			if( core->Initialise( hWnd, rc.right - rc.left, rc.bottom - rc.top ) )
+			{
+				error = true;
+			}
+		}
 	}
 
 	utils::Timers::InitialiseTimers();
 
-	// Main message loop
 	MSG msg = {};
-	while( WM_QUIT != msg.message )
+	if( !error )
 	{
-		if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
+		// Main message loop
+		while( WM_QUIT != msg.message )
 		{
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
-		}
-		else
-		{
-			utils::Timers::UpdateFrameTimer();
-			const float frameTime = utils::Timers::GetFrameTime();
-			if( frameTime > MinFrameTime )
-				core->Update();
-			core->Render();
+			if( PeekMessage( &msg, nullptr, 0, 0, PM_REMOVE ) )
+			{
+				TranslateMessage( &msg );
+				DispatchMessage( &msg );
+			}
+			else
+			{
+				utils::Timers::UpdateFrameTimer();
+				const float frameTime = utils::Timers::GetFrameTime();
+				if( frameTime > MinFrameTime )
+					core->Update();
+				core->Render();
+			}
 		}
 	}
+	else
+	{
+		msg.wParam = 1;
+	}
 
-	core->Shutdown();
+	if( !error )
+	{
+		core->Shutdown();
+	}
 
 	delete core;
 
@@ -142,97 +160,3 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam 
 
 	return DefWindowProc( hWnd, message, wParam, lParam );
 }
-
-void WINAPI wWinMainCRTStartup()
-{
-	STARTUPINFO				startupInfo = { sizeof( STARTUPINFO ),0 };
-
-	GetStartupInfo( &startupInfo );
-
-	WCHAR* commandLine = GetCommandLine();
-
-	// Skip past program name (first token in command line).
-	if( *commandLine == '"' ) // check for and handle quoted program name
-	{
-		// Scan, and skip over, subsequent characters until another
-		// double-quote or a null is encountered
-		while( *commandLine && ( *commandLine != '"' ) )
-			commandLine++;
-
-		// If we stopped on a double-quote (usual case), skip over it.
-		if( *commandLine == '"' )
-			commandLine++;
-	}
-	else
-	{
-		// First token wasn't a quote
-		while( *commandLine > ' ' )
-			commandLine++;
-	}
-
-	// Skip past any white space preceeding the second token.
-	while( *commandLine && ( *commandLine <= ' ' ) )
-		commandLine++;
-
-	int result = wWinMain( GetModuleHandle( NULL ), 0, commandLine, startupInfo.dwFlags & STARTF_USESHOWWINDOW
-		? startupInfo.wShowWindow : SW_SHOWDEFAULT );
-
-	ExitProcess( result );
-}
-
-#ifdef __cplusplus
-extern "C"
-{
-	#pragma function(memset)
-	void* __cdecl memset( _Out_writes_bytes_all_( count ) void* dest, _In_ int value, _In_ size_t count )
-	{
-		char* bytes = (char*)dest;
-		while( count-- )
-		{
-			*bytes++ = (char)value;
-		}
-		return dest;
-	}
-
-#ifdef _DEBUG
-	void* __cdecl memcpy( _Out_writes_bytes_all_( _Size ) void* _Dst, _In_reads_bytes_( _Size ) void const* _Src, _In_ size_t _Size	)
-	{
-		char* pszDest = (char*)_Dst;
-		const char* pszSource = (const char*)_Src;
-		if( ( pszDest != NULL ) && ( pszSource != NULL ) )
-		{
-			while( _Size ) //till cnt
-			{
-				//Copy byte by byte
-				*( pszDest++ ) = *( pszSource++ );
-				--_Size;
-			}
-		}
-		return _Dst;
-	}
-#endif //_DEBUG
-
-	int _fltused = 0;
-
-	int _purecall( void )
-	{
-		ASSERT( FALSE, "Pure virtual function called.\n" );
-		return 0;
-	}
-
-	//_declspec( dllexport )
-	void __cdecl _wassert(
-		_In_z_ wchar_t const* _Message,
-		_In_z_ wchar_t const* _File,
-		_In_   unsigned       _Line)
-	{
-	}
-
-	typedef void ( *AtExitFunc )( void );
-	int __cdecl atexit( AtExitFunc f )
-	{
-		return 0;
-	}
-}
-
-#endif //__cplusplus

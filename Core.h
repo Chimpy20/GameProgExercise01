@@ -41,7 +41,7 @@ public:
 		return m_view;
 	}
 
-	void					Initialise( HWND window, int width, int height );
+	bool					Initialise( HWND window, int width, int height );
 	void					Shutdown();
 
 	void					Update();

@@ -69,45 +69,6 @@
 #include "Utils/Maths.h"
 #include "Debug.h"
 
-#ifdef _DEBUG
-_Check_return_ _CRT_JIT_INTRINSIC inline double fabs( _In_ double _Xx )
-{
-	if( _Xx < 0.0 )
-	{
-		_Xx = -_Xx;
-	}
-
-	return _Xx;
-}
-#endif // _DEBUG
+#include "crtfuncs.h"
 
 static const float Epsilon = 0.001f;
-
-/*namespace DX
-{
-// Helper class for COM exceptions
-class com_exception : public std::exception
-{
-public:
-	com_exception( HRESULT hr ) noexcept : result( hr ) {}
-
-	const char* what() const override
-	{
-		static char s_str[ 64 ] = {};
-		sprintf_s( s_str, "Failure with HRESULT of %08X", static_cast<unsigned int>( result ) );
-		return s_str;
-	}
-
-private:
-	HRESULT result;
-};
-
-// Helper utility converts D3D API failures into exceptions.
-inline void ThrowIfFailed( HRESULT hr )
-{
-	if( FAILED( hr ) )
-	{
-		throw com_exception( hr );
-	}
-}
-}*/

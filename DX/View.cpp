@@ -71,7 +71,8 @@ void View::Refresh()
 
 void View::Shutdown()
 {
-	m_vpConstantBuffer->Release();
+	if( m_vpConstantBuffer != nullptr )
+		m_vpConstantBuffer->Release();
 }
 
 } // namespace DX
