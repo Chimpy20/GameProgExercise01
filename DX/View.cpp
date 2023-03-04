@@ -43,6 +43,8 @@ void View::Refresh()
 {
 	static const DirectX::XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0 };
 
+	m_viewPosition.m128_f32[ 3 ] = 0.0f;
+	m_viewDirection.m128_f32[ 3 ] = 0.0f;
 	m_viewMatrix = XMMatrixLookToLH( m_viewPosition, m_viewDirection, up );
 
 	ASSERT( m_deviceResources != nullptr, "Device resources doesn't exist.\n" );
