@@ -80,6 +80,8 @@ _Check_return_ _CRT_JIT_INTRINSIC inline double fabs( _In_ double _Xx )
 }
 #endif // _DEBUG
 
+static const float Epsilon = 0.001f;
+
 /*namespace DX
 {
 // Helper class for COM exceptions

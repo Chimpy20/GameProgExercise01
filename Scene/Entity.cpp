@@ -135,20 +135,49 @@ void Entity::Render()
 	deviceContext->PSSetShader( m_pixelShader, nullptr, 0 );
 }
 
-void Entity::SetPosition( const DirectX::XMVECTOR position )
+void Entity::SetPosition( const XMVECTOR position )
 {
 	m_position.v = position;
 	m_position.f[ 3 ] = 1.0f;
 }
 
-void Entity::SetOrientation( const DirectX::XMMATRIX& orientation )
+void Entity::SetOrientation( const XMMATRIX& orientation )
 {
+#ifdef _DEBUG
+	XMVECTOR determinant = XMMatrixDeterminant( orientation );
+	ASSERT( ( determinant.m128_f32[ 0 ] < ( 1.0f + Epsilon ) ) && ( determinant.m128_f32[ 0 ] > ( 1.0f - Epsilon ) ), "Orientation matrix isn't normalised.\n" );
+#endif
 	m_orientation = orientation;
+}
+
+// Sets the orientation based on a direction vector assuming up is in the Y axis
+void Entity::SetOrientation( const XMVECTOR& orientation )
+{
+#ifdef _DEBUG
+	XMVECTOR length = XMVector3LengthEst( orientation );
+	ASSERT( ( length.m128_f32[0] < ( 1.0f + Epsilon ) ) && ( length.m128_f32[ 0 ] > ( 1.0f - Epsilon ) ), "Orientation vector isn't normalised.\n" );
+#endif
+
+	XMVECTOR up = XMVECTOR{ 0.0f, 1.0f, 0.0f };
+	XMVECTOR lateral = XMVector3Cross( up, orientation );
+	lateral = XMVector3Normalize( lateral );
+	XMVECTOR relativeUp = XMVector3Cross( orientation, lateral );
+	m_orientation.r[ 0 ] = lateral;
+	m_orientation.r[ 1 ] = relativeUp;
+	m_orientation.r[ 2 ] = orientation;
+	m_orientation.r[ 2 ].m128_f32[ 3 ] = 0.0f;
 }
 
 void Entity::SetScale( const float scale )
 {
 	m_scale = scale;
+}
+
+const XMVECTOR Entity::GetOrientationAsVector() const
+{
+	XMVECTOR orientation;
+	orientation = m_orientation.r[ 2 ];
+	return orientation;
 }
 
 } //namespace scene
