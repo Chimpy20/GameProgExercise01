@@ -150,6 +150,7 @@ void Entity::SetOrientation( const XMMATRIX& orientation )
 	m_orientation = orientation;
 }
 
+// Sets the orientation based on a direction vector assuming up is in the Y axis
 void Entity::SetOrientation( const XMVECTOR& orientation )
 {
 #ifdef _DEBUG
@@ -159,11 +160,12 @@ void Entity::SetOrientation( const XMVECTOR& orientation )
 
 	XMVECTOR up = XMVECTOR{ 0.0f, 1.0f, 0.0f };
 	XMVECTOR lateral = XMVector3Cross( up, orientation );
-	lateral = XMVector3NormalizeEst( lateral );
+	lateral = XMVector3Normalize( lateral );
 	XMVECTOR relativeUp = XMVector3Cross( orientation, lateral );
 	m_orientation.r[ 0 ] = lateral;
 	m_orientation.r[ 1 ] = relativeUp;
 	m_orientation.r[ 2 ] = orientation;
+	m_orientation.r[ 2 ].m128_f32[ 3 ] = 0.0f;
 }
 
 void Entity::SetScale( const float scale )
