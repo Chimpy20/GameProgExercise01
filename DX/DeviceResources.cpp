@@ -68,7 +68,7 @@ DeviceResources::DeviceResources(
 }
 
 // Configures the Direct3D device, and stores handles to it and the device context.
-void DeviceResources::CreateDeviceResources()
+BOOL DeviceResources::CreateDeviceResources()
 {
     UINT creationFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
@@ -174,7 +174,8 @@ void DeviceResources::CreateDeviceResources()
 #if !defined(_DEBUG)
     else
     {
-        ASSERT( FALSE, "No Direct3D hardware device found.\n");
+        io::OutputMessage( "No Direct3D hardware device found.\n" );
+		return TRUE;
     }
 #else
     if (FAILED(hr))
@@ -197,12 +198,15 @@ void DeviceResources::CreateDeviceResources()
 
         if (SUCCEEDED(hr))
         {
-            OutputDebugStringA("Direct3D Adapter - WARP\n");
+			io::OutputMessage("Direct3D Adapter - WARP\n");
         }
+		else
+		{
+			io::OutputMessage( "Failure Creating D3D WARP device.\n" );
+			return TRUE;
+		}
     }
 #endif
-
-	ASSERT( SUCCEEDED( hr ), "Failure Creating D3D device\n" );
 
 #ifdef _DEBUG
     ComPtr<ID3D11Debug> d3dDebug;
@@ -227,20 +231,25 @@ void DeviceResources::CreateDeviceResources()
     }
 #endif
 
-	ASSERT_HANDLE(device.As(&m_d3dDevice));
-	ASSERT_HANDLE(context.As(&m_d3dContext));
-	ASSERT_HANDLE(context.As(&m_d3dAnnotation));
+	device.As(&m_d3dDevice);
+	ASSERT( m_d3dDevice != nullptr, "Unable to get D3D device.\n" );
+	context.As(&m_d3dContext);
+	ASSERT( m_d3dContext != nullptr, "Unable to get D3D context.\n" );
+	context.As(&m_d3dAnnotation);
+	ASSERT( m_d3dAnnotation != nullptr, "Unable to get D3D annotation.\n" );
+
+	return FALSE;
 }
 
 // These resources need to be recreated every time the window size is changed.
-void DeviceResources::CreateWindowSizeDependentResources()
+BOOL DeviceResources::CreateWindowSizeDependentResources()
 {
 	HRESULT hr = 0;
 
     if (!m_window)
     {
         ASSERT( FALSE, "Call SetWindow with a valid Win32 window handle.\n" );
-		return;
+		return TRUE;
     }
 
     // Clear the previous window size specific context.
@@ -276,7 +285,7 @@ void DeviceResources::CreateWindowSizeDependentResources()
 
             // Everything is set up now. Do not continue execution of this method. HandleDeviceLost will reenter this method
             // and correctly set up the new device.
-            return;
+            return TRUE;
         }
         else
         {
@@ -369,6 +378,8 @@ void DeviceResources::CreateWindowSizeDependentResources()
         static_cast<float>(backBufferWidth),
         static_cast<float>(backBufferHeight)
         );
+
+	return FALSE;
 }
 
 // This method is called when the Win32 window is created (or re-created).
