@@ -41,6 +41,11 @@ public:
 		return m_view;
 	}
 
+	scene::Scene* GetScene() const
+	{
+		return m_scene;
+	}
+
 	bool					Initialise( HWND window, int width, int height );
 	void					Shutdown();
 

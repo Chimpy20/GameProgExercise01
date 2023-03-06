@@ -10,9 +10,6 @@ namespace scene
 {
 
 Entity::Entity() :
-	m_inputLayout( nullptr ),
-	m_vertexShader( nullptr ),
-	m_pixelShader( nullptr ),
 	m_vertexBuffer( nullptr ),
 	m_constantBuffer( nullptr )
 {
@@ -33,55 +30,17 @@ void Entity::Initialise()
 	const DX::DeviceResources* const deviceResources = core->GetDeviceResources();
 
 	HRESULT hr = 0;
-	DWORD size = 0;
 
 	ID3D11Device* const device = deviceResources->GetD3DDevice();
 
-	void* vertShaderData = nullptr;
-
-	// Load and create the vertex shader.
-	HANDLE vsHandle = utils::file::GetFileData( "VertexShader.cso", &vertShaderData, &size );
-
-	hr = device->CreateVertexShader( vertShaderData, size,
-		nullptr, &m_vertexShader );
-	ASSERT_HANDLE( hr );
-
-	// Create input layout.
-	static const D3D11_INPUT_ELEMENT_DESC s_inputElementDesc[ 2 ] =
-	{
-		{ "POSITION",   0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA,  0 },
-		{ "COLOR",      0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA , 0 },
-	};
-
-	hr = device->CreateInputLayout( s_inputElementDesc, _countof( s_inputElementDesc ),
-		vertShaderData, size,
-		&m_inputLayout );
-	ASSERT_HANDLE( hr );
-
-	utils::file::CloseFile( vsHandle );
-
-	void* pixelShaderData = nullptr;
-
-	// Handle loading and creating the pixel shader
-	HANDLE pxHandle = utils::file::GetFileData( "PixelShader.cso", &pixelShaderData, &size );
-
-	hr = device->CreatePixelShader( pixelShaderData, size,
-		nullptr, &m_pixelShader );
-	ASSERT_HANDLE( hr );
-
-	utils::file::CloseFile( pxHandle );
-
 	CD3D11_BUFFER_DESC worldBufferDesc( sizeof( DirectX::XMMATRIX ), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE );
-	device->CreateBuffer( &worldBufferDesc, nullptr, &m_constantBuffer );
+	hr = device->CreateBuffer( &worldBufferDesc, nullptr, &m_constantBuffer );
+	ASSERT_HANDLE( hr );
 }
 
 void Entity::Shutdown()
 {
 	m_constantBuffer->Release();
-
-	m_inputLayout->Release();
-	m_pixelShader->Release();
-	m_vertexShader->Release();
 
 	if( m_vertexBuffer != nullptr )
 		m_vertexBuffer->Release();
@@ -96,6 +55,7 @@ void Entity::Render()
 	HRESULT hr = S_OK;
 
 	Core* const core = Core::Get();
+	scene::Scene* const scene = core->GetScene();
 
 	const DX::DeviceResources* const deviceResources = core->GetDeviceResources();
 
@@ -126,13 +86,7 @@ void Entity::Render()
 	// Actually set the buffer
 	deviceContext->VSSetConstantBuffers( 1, 1, &m_constantBuffer );
 
-	// Set input assembler state.
-	deviceContext->IASetInputLayout( m_inputLayout );
-
-	// Set shaders.
-	deviceContext->VSSetShader( m_vertexShader, nullptr, 0 );
-	deviceContext->GSSetShader( nullptr, nullptr, 0 );
-	deviceContext->PSSetShader( m_pixelShader, nullptr, 0 );
+	scene->ActivateShaders();
 }
 
 void Entity::SetPosition( const XMVECTOR position )
