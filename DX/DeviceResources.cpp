@@ -231,6 +231,26 @@ BOOL DeviceResources::CreateDeviceResources()
     }
 #endif
 
+	D3D11_RASTERIZER_DESC rasteriserDesc = D3D11_RASTERIZER_DESC {
+		D3D11_FILL_SOLID,
+		D3D11_CULL_NONE,
+		FALSE,
+		0,
+		0.0f,
+		0.0f,
+		TRUE,
+		FALSE,
+		FALSE,
+		FALSE
+	};
+	ID3D11RasterizerState* rasteriserState = nullptr;
+	hr = device->CreateRasterizerState( &rasteriserDesc, &rasteriserState );
+	ASSERT_HANDLE( hr );
+	if( SUCCEEDED( hr ) )
+	{
+		context->RSSetState( rasteriserState );
+	}
+
 	device.As(&m_d3dDevice);
 	ASSERT( m_d3dDevice != nullptr, "Unable to get D3D device.\n" );
 	context.As(&m_d3dContext);
