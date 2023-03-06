@@ -18,8 +18,6 @@ Scene::Scene() :
 	m_vertexShader( nullptr ),
 	m_pixelShader( nullptr ),
 	m_camera( nullptr ),
-	m_testObject1( nullptr ),
-	m_testObject2( nullptr ),
 	m_ground( nullptr )
 {
 	m_camera = new Camera();
@@ -38,35 +36,59 @@ Scene::~Scene()
 
 void Scene::Initialise()
 {
-	// Replace this with some proper camera code
 	Core* const core = Core::Get();
-	DX::View* const view = core->GetView();
-	view->SetViewPosition( XMVECTOR{ -5.0f, 10.0f, 5.0f, 0.0f } );
-	XMVECTOR viewDirection = XMVector3Normalize( XMVECTOR{ 5.0f, -10.0f, -5.0f, 0.0f } );
-	view->SetViewDirection( viewDirection );
 
-	XMVECTOR position;
-	XMMATRIX orientation;
+	const DX::DeviceResources* const deviceResources = core->GetDeviceResources();
 
-	// 1st test object
-	m_testObject1->Initialise();
+	HRESULT hr = 0;
+	DWORD size = 0;
 
-	position = XMVectorSet( -2.0f, 0.0f, 0.0f, 1.0f );
-	m_testObject1->SetPosition( position );
+	ID3D11Device* const device = deviceResources->GetD3DDevice();
 
-	// 2nd test object
-	m_testObject2->Initialise();
+	void* vertShaderData = nullptr;
 
-	position = XMVectorSet( 2.0f, 0.0f, 0.0f, 1.0f );
-	m_testObject2->SetPosition( position );
-	orientation = XMMatrixRotationY( XM_PIDIV2 );
-	m_testObject2->SetOrientation( orientation );
+	// Load and create the vertex shader.
+	HANDLE vsHandle = utils::file::GetFileData( "VertexShader.cso", &vertShaderData, &size );
+
+	hr = device->CreateVertexShader( vertShaderData, size,
+		nullptr, &m_vertexShader );
+	ASSERT_HANDLE( hr );
+
+	// Create input layout.
+	static const D3D11_INPUT_ELEMENT_DESC s_inputElementDesc[ 2 ] =
+	{
+		{ "POSITION",   0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA,  0 },
+		{ "COLOR",      0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D11_INPUT_PER_VERTEX_DATA , 0 },
+	};
+
+	hr = device->CreateInputLayout( s_inputElementDesc, _countof( s_inputElementDesc ),
+		vertShaderData, size,
+		&m_inputLayout );
+	ASSERT_HANDLE( hr );
+
+	utils::file::CloseFile( vsHandle );
+
+	void* pixelShaderData = nullptr;
+
+	// Handle loading and creating the pixel shader
+	HANDLE pxHandle = utils::file::GetFileData( "PixelShader.cso", &pixelShaderData, &size );
+
+	hr = device->CreatePixelShader( pixelShaderData, size,
+		nullptr, &m_pixelShader );
+	ASSERT_HANDLE( hr );
+
+	utils::file::CloseFile( pxHandle );
+
+	m_ground->Initialise();
 }
 
 void Scene::Shutdown()
 {
-	m_testObject2->Shutdown();
-	m_testObject1->Shutdown();
+	m_ground->Shutdown();
+
+	m_inputLayout->Release();
+	m_vertexShader->Release();
+	m_pixelShader->Release();
 }
 
 void Scene::Update()

@@ -29,8 +29,6 @@ private:
 	ID3D11PixelShader* m_pixelShader;
 
 	Camera*				m_camera;
-	TestObject*			m_testObject1;
-	TestObject*			m_testObject2;
 	Ground*				m_ground;
 };
 
