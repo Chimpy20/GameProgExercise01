@@ -8,9 +8,10 @@ using namespace DirectX;
 namespace scene
 {
 
-const float Flower::BaseRadius = 0.1f;
+const float Flower::YOffset = 0.01f;
+const float Flower::BaseRadius = 0.2f;
 const float Flower::RimRadius = 0.2f;
-const float Flower::PetalHeight = 0.1f;
+const float Flower::PetalHeight = 0.3f;
 const float Flower::PetalWidth = 0.5f;
 
 const DirectX::XMFLOAT4 Flower::CentreColourFull = XMFLOAT4{ 0.9f, 0.1f, 0.9f, 1.0f };
@@ -37,7 +38,7 @@ void Flower::Initialise()
 	ID3D11Device* const device = deviceResources->GetD3DDevice();
 
 	// Create the flower petals
-	static const UINT NumPetalVertices = NumPetals * 6;
+	static const UINT NumPetalVertices = NumPetals * 9;
 	Vertex* const petalVertices = new Vertex[ NumPetalVertices ];
 	ASSERT( petalVertices != nullptr, "Couldn't create petal vertices.\n" );
 
@@ -46,38 +47,58 @@ void Flower::Initialise()
 	float startingAngle = 0.0f;
 	for( UINT petalIndex = 0; petalIndex < NumPetals; ++petalIndex )
 	{
+		// The centre
+		vertex->position.x = 0.0f;
+		vertex->position.y = YOffset;
+		vertex->position.z = 0.0f;
+		vertex->color = RimColourFull;
+		vertex++;
+
 		vertex->position.x = DirectX::XMScalarSin( startingAngle ) * BaseRadius;
-		vertex->position.y = 0.0f;
+		vertex->position.y = YOffset;
+		vertex->position.z = DirectX::XMScalarCos( startingAngle ) * BaseRadius;
+		vertex->color = RimColourFull;
+		vertex++;
+
+		vertex->position.x = DirectX::XMScalarSin( startingAngle + angleStride ) * BaseRadius;
+		vertex->position.y = YOffset;
+		vertex->position.z = DirectX::XMScalarCos( startingAngle + angleStride ) * BaseRadius;
+		vertex->color = RimColourFull;
+		vertex++;
+		
+		// The petals
+		vertex->position.x = DirectX::XMScalarSin( startingAngle ) * BaseRadius;
+		vertex->position.y = YOffset;
 		vertex->position.z = DirectX::XMScalarCos( startingAngle ) * BaseRadius;
 		vertex->color = CentreColourFull;
 		vertex++;
 
 		vertex->position.x = DirectX::XMScalarSin( startingAngle ) * ( BaseRadius + PetalWidth );
-		vertex->position.y = PetalHeight;
+		vertex->position.y = YOffset + PetalHeight;
 		vertex->position.z = DirectX::XMScalarCos( startingAngle ) * ( BaseRadius + PetalWidth );
 		vertex->color = RimColourFull;
 		vertex++;
 
 		vertex->position.x = DirectX::XMScalarSin( startingAngle + angleStride ) * ( BaseRadius + PetalWidth );
-		vertex->position.y = PetalHeight;
+		vertex->position.y = YOffset + PetalHeight;
 		vertex->position.z = DirectX::XMScalarCos( startingAngle + angleStride ) * ( BaseRadius + PetalWidth );
 		vertex->color = RimColourFull;
 		vertex++;
 
 		vertex->position.x = DirectX::XMScalarSin( startingAngle ) * BaseRadius;
-		vertex->position.y = 0.0f;
+		vertex->position.y = YOffset;
 		vertex->position.z = DirectX::XMScalarCos( startingAngle ) * BaseRadius;
 		vertex->color = CentreColourFull;
 		vertex++;
 
 		vertex->position.x = DirectX::XMScalarSin( startingAngle + angleStride ) * ( BaseRadius + PetalWidth );
-		vertex->position.y = PetalHeight;
+		vertex->position.y = YOffset + PetalHeight;
 		vertex->position.z = DirectX::XMScalarCos( startingAngle + angleStride ) * ( BaseRadius + PetalWidth );
 		vertex->color = RimColourFull;
 		vertex++;
 
 		vertex->position.x = DirectX::XMScalarSin( startingAngle + angleStride ) * BaseRadius;
-		vertex->position.y = 0.0f;
+		vertex->position.y = YOffset;
 		vertex->position.z = DirectX::XMScalarCos( startingAngle + angleStride ) * BaseRadius;
 		vertex->color = CentreColourFull;
 		vertex++;
@@ -100,7 +121,7 @@ void Flower::Initialise()
 	ASSERT_HANDLE( hr );
 
 	if( petalVertices != nullptr )
-		delete petalVertices;
+		delete[] petalVertices;
 
 	SetScale( 1.0f );
 }
@@ -128,9 +149,9 @@ void Flower::Render()
 	// Draw triangle.
 	UINT strides = sizeof( Vertex );
 	UINT offsets = 0;
-	context->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+	context->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 	context->IASetVertexBuffers( 0, 1, &m_vertexBuffer, &strides, &offsets );
-	static const UINT NumPetalVertices = NumPetals * 6;
+	static const UINT NumPetalVertices = NumPetals * 9;
 	context->Draw( NumPetalVertices, 0 );
 }
 

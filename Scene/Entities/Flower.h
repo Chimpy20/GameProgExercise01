@@ -9,6 +9,7 @@ class Flower : public Entity
 {
 public:
 	static const UINT NumPetals = 8;
+	static const float YOffset;
 	static const float BaseRadius;
 	static const float RimRadius;
 	static const float PetalHeight;
