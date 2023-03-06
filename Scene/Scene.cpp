@@ -7,6 +7,7 @@
 #include "Scene\Camera.h"
 #include "Scene\Entities\Ground.h"
 #include "Scene\Entities\Flower.h"
+#include "Scene\Entities\Bee.h"
 
 using namespace DirectX;
 
@@ -19,13 +20,16 @@ Scene::Scene() :
 	m_pixelShader( nullptr ),
 	m_camera( nullptr ),
 	m_ground( nullptr ),
-	m_flower( nullptr )
+	m_flower( nullptr ),
+	m_bee( nullptr )
 {
 	m_camera = new Camera();
 
 	m_ground = new Ground();
 
 	m_flower = new Flower();
+
+	m_bee = new Bee();
 }
 
 Scene::~Scene()
@@ -38,6 +42,9 @@ Scene::~Scene()
 
 	if( m_flower != nullptr )
 		delete m_flower;
+
+	if( m_bee != nullptr )
+		delete m_bee;
 }
 
 void Scene::Initialise()
@@ -87,10 +94,12 @@ void Scene::Initialise()
 
 	m_ground->Initialise();
 	m_flower->Initialise();
+	m_bee->Initialise();
 }
 
 void Scene::Shutdown()
 {
+	m_bee->Shutdown();
 	m_flower->Shutdown();
 	m_ground->Shutdown();
 
@@ -102,12 +111,15 @@ void Scene::Shutdown()
 void Scene::Update()
 {
 	m_camera->Update();
+
+	m_bee->Update();
 }
 
 void Scene::Render()
 {
 	m_ground->Render();
 	m_flower->Render();
+	m_bee->Render();
 }
 
 void Scene::ActivateShaders()

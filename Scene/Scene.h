@@ -7,6 +7,7 @@ class TestObject;
 class Camera;
 class Ground;
 class Flower;
+class Bee;
 
 // Object containing all the entities and related objects in the scene
 class Scene sealed
@@ -31,6 +32,7 @@ private:
 	Camera*				m_camera;
 	Ground*				m_ground;
 	Flower*				m_flower;
+	Bee*				m_bee;
 };
 
 } // namespace scene
