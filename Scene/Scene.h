@@ -21,11 +21,16 @@ public:
 	void				Update();
 	void				Render();
 
+	void				ActivateShaders();
+
 private:
+	ID3D11InputLayout* m_inputLayout;
+	ID3D11VertexShader* m_vertexShader;
+	ID3D11PixelShader* m_pixelShader;
+
 	Camera*				m_camera;
-	TestObject*			m_testObject1;
-	TestObject*			m_testObject2;
 	Ground*				m_ground;
+	Flower*				m_flower;
 };
 
 } // namespace scene
