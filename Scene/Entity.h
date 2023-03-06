@@ -48,9 +48,6 @@ public:
 
 
 protected:
-	ID3D11InputLayout*			m_inputLayout;
-	ID3D11VertexShader*			m_vertexShader;
-	ID3D11PixelShader*			m_pixelShader;
 	ID3D11Buffer*				m_vertexBuffer;
 	ID3D11Buffer*				m_constantBuffer;
 

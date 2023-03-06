@@ -60,15 +60,15 @@ void TestObject::Update()
 
 void TestObject::Render()
 {
+	// Ensure the base class is called as this sets up the shaders for drawing
 	Entity::Render();
 
 	Core* const core = Core::Get();
 
 	const DX::DeviceResources* const deviceResources = core->GetDeviceResources();
-
 	ID3D11DeviceContext* const context = deviceResources->GetD3DDeviceContext();
 
-	// Draw triangle.
+	// Draw the triangles
 	UINT strides = sizeof( Vertex );
 	UINT offsets = 0;
 	context->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
