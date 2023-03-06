@@ -5,8 +5,8 @@
 #include "Utils\File.h"
 #include "Scene\Scene.h"
 #include "Scene\Camera.h"
-#include "Scene\Entities\TestObject.h"
 #include "Scene\Entities\Ground.h"
+#include "Scene\Entities\Flower.h"
 
 using namespace DirectX;
 
@@ -18,11 +18,14 @@ Scene::Scene() :
 	m_vertexShader( nullptr ),
 	m_pixelShader( nullptr ),
 	m_camera( nullptr ),
-	m_ground( nullptr )
+	m_ground( nullptr ),
+	m_flower( nullptr )
 {
 	m_camera = new Camera();
 
 	m_ground = new Ground();
+
+	m_flower = new Flower();
 }
 
 Scene::~Scene()
@@ -32,6 +35,9 @@ Scene::~Scene()
 
 	if( m_ground != nullptr )
 		delete m_ground;
+
+	if( m_flower != nullptr )
+		delete m_flower;
 }
 
 void Scene::Initialise()
@@ -80,10 +86,12 @@ void Scene::Initialise()
 	utils::file::CloseFile( pxHandle );
 
 	m_ground->Initialise();
+	m_flower->Initialise();
 }
 
 void Scene::Shutdown()
 {
+	m_flower->Shutdown();
 	m_ground->Shutdown();
 
 	m_inputLayout->Release();
@@ -99,6 +107,7 @@ void Scene::Update()
 void Scene::Render()
 {
 	m_ground->Render();
+	m_flower->Render();
 }
 
 void Scene::ActivateShaders()

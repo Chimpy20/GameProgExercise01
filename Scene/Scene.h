@@ -30,6 +30,7 @@ private:
 
 	Camera*				m_camera;
 	Ground*				m_ground;
+	Flower*				m_flower;
 };
 
 } // namespace scene
