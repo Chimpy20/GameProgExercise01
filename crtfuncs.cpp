@@ -90,6 +90,96 @@ extern "C"
 	{
 		return 0;
 	}
+
+	ULONG _tls_index = 0;
+
+	int const StaticNotInitialized = 0;
+	int const StaticInitialized = -1;
+	int const EpochStart = INT_MIN;
+
+	DWORD const XpTimeout = 100;
+
+	CRITICAL_SECTION _Tss_mutex;
+	CONDITION_VARIABLE _Tss_cv;
+
+	int _Init_global_epoch = EpochStart;
+	__declspec( thread ) int _Init_thread_epoch = EpochStart;
+
+	void __cdecl _Init_thread_lock( void )
+	{
+		EnterCriticalSection( &_Tss_mutex );
+	}
+
+	void __cdecl _Init_thread_unlock( void )
+	{
+		LeaveCriticalSection( &_Tss_mutex );
+	}
+
+	void __cdecl _Init_thread_wait( DWORD const TimeOut )
+	{
+		SleepConditionVariableCS( &_Tss_cv, &_Tss_mutex, TimeOut );
+
+
+		_Init_thread_lock();
+		WaitForSingleObjectEx( 0, TimeOut, FALSE );
+		_Init_thread_unlock();
+	}
+
+	void __cdecl _Init_thread_notify( void )
+	{
+		WakeAllConditionVariable( &_Tss_cv );
+	}
+
+	void __cdecl _Init_thread_header( int* const Static )
+	{
+		_Init_thread_lock();
+
+		if( *Static == StaticNotInitialized )
+
+		{
+			*Static = StaticInitialized;
+		}
+		else
+		{
+			//NOTE: Fix for WinXP....
+			_Init_thread_wait( XpTimeout );
+			while( *Static == StaticInitialized )
+			{
+				if( *Static == StaticNotInitialized )
+				{
+					*Static = StaticInitialized;
+					_Init_thread_unlock();
+				}
+			}
+
+			_Init_thread_epoch = _Init_global_epoch;
+		}
+
+		_Init_thread_unlock();
+	}
+
+	void __cdecl _Init_thread_footer( int* const Static )
+	{
+		_Init_thread_lock();
+		{
+			++_Init_global_epoch;
+			*Static = _Init_global_epoch;
+		}
+		_Init_thread_unlock();
+
+		_Init_thread_notify();
+	}
+
+	void __cdecl _Init_thread_abort( int* const Static )
+	{
+		_Init_thread_lock();
+		{
+			*Static = StaticNotInitialized;
+		}
+		_Init_thread_unlock();
+
+		_Init_thread_notify();
+	}
 }
 
 #endif //__cplusplus

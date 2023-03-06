@@ -23,7 +23,10 @@ private:
 
 } // namespace memory
 
-void* operator new( size_t size );
-void* operator new[]( size_t size );
-void operator delete( void* p );
-void operator delete( void* p, size_t size );
+	void* __CRTDECL operator new( size_t size );
+	void* __CRTDECL operator new[]( size_t size );
+	void __CRTDECL operator delete( void* p );
+	void __CRTDECL operator delete( void* p, size_t size );
+	void __CRTDECL operator delete[]( void* p );
+}
+#endif

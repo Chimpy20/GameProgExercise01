@@ -72,3 +72,8 @@ void __CRTDECL operator delete( void* p, size_t size )
 {
 	memory::Heap::Free( p );
 }
+
+void __CRTDECL operator delete[]( void* p )
+{
+	memory::Heap::Free( p );
+}
