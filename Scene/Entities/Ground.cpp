@@ -7,6 +7,7 @@ namespace scene
 {
 
 const float Ground::HalfWidth = 5.0f;
+const DirectX::XMFLOAT4 Ground::Colour = DirectX::XMFLOAT4{ 0.05f, 0.5f, 0.1f, 1.0f };
 
 Ground::Ground()
 {
@@ -29,12 +30,12 @@ void Ground::Initialise()
 	ID3D11Device* const device = deviceResources->GetD3DDevice();
 
 	// Create vertex buffer.
-	static const Vertex VertexData[ NumVertices ] =
+	const Vertex VertexData[ NumVertices ] =
 	{
-		{ { -HalfWidth, 0.0f, HalfWidth, 1.0f },{ 0.05f, 0.9f, 0.1f, 1.0f } },
-		{ { HalfWidth,  0.0f, HalfWidth, 1.0f },{ 0.05f, 0.9f, 0.1f, 1.0f } },
-		{ { -HalfWidth, 0.0f, -HalfWidth, 1.0f },{ 0.05f, 0.9f, 0.1f, 1.0f } },
-		{ { HalfWidth, 0.0f, -HalfWidth, 1.0f },{ 0.05f, 0.9f, 0.1f, 1.0f } }
+		{ { -HalfWidth, 0.0f, HalfWidth, 1.0f }, Colour},
+		{ { HalfWidth,  0.0f, HalfWidth, 1.0f }, Colour },
+		{ { -HalfWidth, 0.0f, -HalfWidth, 1.0f }, Colour },
+		{ { HalfWidth, 0.0f, -HalfWidth, 1.0f }, Colour }
 
 	};
 
