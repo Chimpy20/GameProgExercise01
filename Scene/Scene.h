@@ -9,6 +9,14 @@ class TestObject;
 class Scene sealed
 {
 public:
+	enum ShaderTypes
+	{
+		Unlit = 0,
+		Lit,
+
+		NumShaderTypes
+	};
+
 	Scene();
 	~Scene();
 
@@ -18,12 +26,23 @@ public:
 	void				Update();
 	void				Render();
 
-	void				ActivateShaders();
+	void				ActivateShaders( const ShaderTypes shaderType );
 
 private:
-	ID3D11InputLayout* m_inputLayout;
-	ID3D11VertexShader* m_vertexShader;
-	ID3D11PixelShader* m_pixelShader;
+	struct ShaderData
+	{
+		ShaderData(): inputLayout( nullptr ),
+			vertexShader( nullptr ),
+			pixelShader( nullptr )
+		{
+		}
+
+		ID3D11InputLayout* inputLayout;
+		ID3D11VertexShader* vertexShader;
+		ID3D11PixelShader* pixelShader;
+	};
+	
+	ShaderData m_shaderData[ ShaderTypes::NumShaderTypes ];
 
 	TestObject*			m_testObject1;
 	TestObject*			m_testObject2;

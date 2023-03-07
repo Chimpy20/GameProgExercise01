@@ -44,7 +44,11 @@ namespace DX
         // Direct3D Accessors.
         ID3D11Device1*          GetD3DDevice() const                    { return m_d3dDevice.Get(); }
         ID3D11DeviceContext1*   GetD3DDeviceContext() const             { return m_d3dContext.Get(); }
+#ifndef ENABLE_PIX
         IDXGISwapChain1*        GetSwapChain() const                    { return m_swapChain.Get(); }
+#else
+		IDXGISwapChain*         GetSwapChain() const                    { return m_swapChain.Get(); }
+#endif
         D3D_FEATURE_LEVEL       GetDeviceFeatureLevel() const           { return m_d3dFeatureLevel; }
         ID3D11Texture2D*        GetRenderTarget() const                 { return m_renderTarget.Get(); }
         ID3D11Texture2D*        GetDepthStencil() const                 { return m_depthStencil.Get(); }
@@ -82,7 +86,11 @@ namespace DX
         Microsoft::WRL::ComPtr<IDXGIFactory2>               m_dxgiFactory;
         Microsoft::WRL::ComPtr<ID3D11Device1>               m_d3dDevice;
         Microsoft::WRL::ComPtr<ID3D11DeviceContext1>        m_d3dContext;
+#ifndef ENABLE_PIX
         Microsoft::WRL::ComPtr<IDXGISwapChain1>             m_swapChain;
+#else
+		Microsoft::WRL::ComPtr<IDXGISwapChain>              m_swapChain;
+#endif
         Microsoft::WRL::ComPtr<ID3DUserDefinedAnnotation>   m_d3dAnnotation;
 
         // Direct3D rendering objects. Required for 3D.

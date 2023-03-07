@@ -13,6 +13,9 @@ public:
 	struct VPConstantBuffer
 	{
 		DirectX::XMMATRIX viewProjectionMatrix;
+		DirectX::XMFLOAT4 vAmbient;
+		DirectX::XMFLOAT4 vDirLight0;
+		DirectX::XMFLOAT4 vDirLight0Col;
 	};
 	static_assert( ( sizeof( VPConstantBuffer ) % 16 ) == 0, "Constant buffer must always be 16-byte aligned" );
 
@@ -52,6 +55,10 @@ private:
 
 	DirectX::XMVECTOR				m_viewPosition;
 	DirectX::XMVECTOR				m_viewDirection;
+
+	DirectX::XMFLOAT4				m_ambient;
+	DirectX::XMVECTOR				m_dirLightDir;
+	DirectX::XMFLOAT4				m_dirLightCol;
 };
 
 } // namespace DX
