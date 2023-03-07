@@ -159,8 +159,8 @@ BOOL DeviceResources::CreateDeviceResources()
     if (adapter)
     {
         hr = D3D11CreateDevice(
-            adapter.Get(),
-            D3D_DRIVER_TYPE_UNKNOWN,
+            NULL,
+            D3D_DRIVER_TYPE_HARDWARE,
             nullptr,
             creationFlags,
             s_featureLevels,
@@ -312,34 +312,62 @@ BOOL DeviceResources::CreateWindowSizeDependentResources()
 			ASSERT_HANDLE(hr);
         }
     }
-    else
-    {
+	else
+	{
+		ASSERT( m_d3dDevice.Get(), "Invalid D3D device.\n" );
+		IDXGISwapChain* swapchain = nullptr;
 
-        // Create a descriptor for the swap chain.
-        DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-        swapChainDesc.Width = backBufferWidth;
-        swapChainDesc.Height = backBufferHeight;
-        swapChainDesc.Format = backBufferFormat;
-        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.BufferCount = m_backBufferCount;
-        swapChainDesc.SampleDesc.Count = 1;
-        swapChainDesc.SampleDesc.Quality = 0;
-        swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
-        swapChainDesc.SwapEffect = (m_options & (c_FlipPresent | c_AllowTearing | c_EnableHDR)) ? DXGI_SWAP_EFFECT_FLIP_DISCARD : DXGI_SWAP_EFFECT_DISCARD;
-        swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
-        swapChainDesc.Flags = (m_options & c_AllowTearing) ? DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0u;
+#ifdef ENABLE_PIX
+		DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+		swapChainDesc.BufferDesc.Width = backBufferWidth;
+		swapChainDesc.BufferDesc.Height = backBufferHeight;
+		swapChainDesc.BufferDesc.Format = backBufferFormat;
+		swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+		swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+		swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+		swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+		swapChainDesc.SampleDesc.Count = 1;
+		swapChainDesc.SampleDesc.Quality = 0;
+		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		swapChainDesc.BufferCount = m_backBufferCount;
+		swapChainDesc.OutputWindow = m_window;
+		swapChainDesc.Windowed = TRUE;
+		swapChainDesc.SwapEffect = ( m_options & ( c_FlipPresent | c_AllowTearing | c_EnableHDR ) ) ? DXGI_SWAP_EFFECT_FLIP_DISCARD : DXGI_SWAP_EFFECT_DISCARD;
+		swapChainDesc.Flags = ( m_options & c_AllowTearing ) ? DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0u;
+		hr = m_dxgiFactory->CreateSwapChain(
+			m_d3dDevice.Get(),
+			&swapChainDesc,
+			&swapchain
+		);
 
-        DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
-        fsSwapChainDesc.Windowed = TRUE;
+		m_swapChain = swapchain;
+#else
+		// Create a descriptor for the swap chain.
+		DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
+		swapChainDesc.Width = backBufferWidth;
+		swapChainDesc.Height = backBufferHeight;
+		swapChainDesc.Format = backBufferFormat;
+		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		swapChainDesc.BufferCount = m_backBufferCount;
+		swapChainDesc.SampleDesc.Count = 1;
+		swapChainDesc.SampleDesc.Quality = 0;
+		swapChainDesc.Scaling = DXGI_SCALING_STRETCH;
+		swapChainDesc.SwapEffect = ( m_options & ( c_FlipPresent | c_AllowTearing | c_EnableHDR ) ) ? DXGI_SWAP_EFFECT_FLIP_DISCARD : DXGI_SWAP_EFFECT_DISCARD;
+		swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+		swapChainDesc.Flags = ( m_options & c_AllowTearing ) ? DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING : 0u;
 
-        // Create a SwapChain from a Win32 window.
-        hr = m_dxgiFactory->CreateSwapChainForHwnd(
-            m_d3dDevice.Get(),
-            m_window,
-            &swapChainDesc,
-            &fsSwapChainDesc,
-            nullptr, m_swapChain.ReleaseAndGetAddressOf()
-            );
+		DXGI_SWAP_CHAIN_FULLSCREEN_DESC fsSwapChainDesc = {};
+		fsSwapChainDesc.Windowed = TRUE;
+
+		// Create a SwapChain from a Win32 window.
+		hr = m_dxgiFactory->CreateSwapChainForHwnd(
+			m_d3dDevice.Get(),
+			m_window,
+			&swapChainDesc,
+			&fsSwapChainDesc,
+			nullptr, m_swapChain.ReleaseAndGetAddressOf()
+		);
+#endif // ENABLE_PIX
 		ASSERT( SUCCEEDED( hr ), "Unable to create swap chain.\n" );
 
         // This class does not support exclusive full-screen mode and prevents DXGI from responding to the ALT+ENTER shortcut

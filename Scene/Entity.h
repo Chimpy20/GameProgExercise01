@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Scene\Scene.h"
+
 namespace scene
 {
 
@@ -10,6 +12,13 @@ public:
 	struct Vertex
 	{
 		DirectX::XMFLOAT4 position;
+		DirectX::XMFLOAT4 color;
+	};
+
+	struct VertexLit
+	{
+		DirectX::XMFLOAT4 position;
+		DirectX::XMFLOAT3 normal;
 		DirectX::XMFLOAT4 color;
 	};
 
@@ -50,6 +59,8 @@ protected:
 	ID3D11Buffer*				m_vertexBuffer;
 	DirectX::XMVECTORF32		m_position;
 	DirectX::XMMATRIX			m_orientation;
+
+	Scene::ShaderTypes			m_shaderType;
 	DirectX::XMVECTORF32		m_scale;
 
 private:

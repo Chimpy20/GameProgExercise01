@@ -12,8 +12,18 @@ View::View( DeviceResources* deviceResources ) :
 	m_vpConstantBuffer( nullptr )
 {
 	// Initialize the world matrix
-	m_viewMatrix = DirectX::XMMatrixIdentity();
-	m_projectionMatrix = DirectX::XMMatrixIdentity();
+	m_viewMatrix = XMMatrixIdentity();
+	m_projectionMatrix = XMMatrixIdentity();
+
+	m_viewPosition = XMVectorZero();
+	m_viewDirection = XMVECTOR{ -1.0f, 1.0f, 1.0f, 0.0f };
+	m_viewDirection = XMVector3Normalize( m_viewDirection );
+
+	m_ambient = XMFLOAT4{ 0.5f, 0.5f, 0.5f, 0.0f };
+	m_dirLightDir = XMVECTOR{ -0.25f, -0.75f, -0.25f, 0.0f };
+	m_dirLightDir = XMVector3Normalize( m_dirLightDir );
+	m_dirLightCol = XMFLOAT4{ 0.5f, 0.5f, 0.5f, 0.0f };
+
 }
 
 View::~View()
@@ -60,6 +70,9 @@ void View::Refresh()
 
 	// Shaders compiled with default row-major matrices
 	vpConstants.viewProjectionMatrix = XMMatrixTranspose( viewProjection );
+	vpConstants.vAmbient = m_ambient;
+	XMStoreFloat4( &vpConstants.vDirLight0, m_dirLightDir );
+	vpConstants.vDirLight0Col = m_dirLightCol;
 
 	ASSERT( m_vpConstantBuffer != nullptr, "Constant buffer doesn't exist. Has View::Initialise() been called?\n" );
 
@@ -69,6 +82,7 @@ void View::Refresh()
 	deviceContext->Unmap( m_vpConstantBuffer, 0 );
 
 	deviceContext->VSSetConstantBuffers( 0, 1, &m_vpConstantBuffer );
+	deviceContext->PSSetConstantBuffers( 0, 1, &m_vpConstantBuffer );
 }
 
 void View::Shutdown()

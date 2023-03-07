@@ -11,7 +11,8 @@ namespace scene
 
 Entity::Entity() :
 	m_vertexBuffer( nullptr ),
-	m_constantBuffer( nullptr )
+	m_constantBuffer( nullptr ),
+	m_shaderType( Scene::ShaderTypes::Unlit )
 {
 	m_orientation = XMMatrixIdentity();
 	m_position.v = XMVectorZero();
@@ -86,7 +87,7 @@ void Entity::Render()
 	// Actually set the buffer
 	deviceContext->VSSetConstantBuffers( 1, 1, &m_constantBuffer );
 
-	scene->ActivateShaders();
+	scene->ActivateShaders( m_shaderType );
 }
 
 void Entity::SetPosition( const XMVECTOR position )

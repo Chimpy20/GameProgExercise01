@@ -42,6 +42,8 @@
 
 //#include <stdexcept>
 
+#define ENABLE_PIX
+
 #include "BufferHelpers.h"
 #include "CommonStates.h"
 #include "DDSTextureLoader.h"
