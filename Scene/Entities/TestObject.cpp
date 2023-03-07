@@ -8,6 +8,7 @@ namespace scene
 
 TestObject::TestObject()
 {
+	m_shaderType = Scene::ShaderTypes::Lit;
 }
 
 void TestObject::Initialise()
@@ -23,12 +24,19 @@ void TestObject::Initialise()
 	ID3D11Device* const device = deviceResources->GetD3DDevice();
 
 	// Create vertex buffer.
-	static const Vertex VertexData[ NumVertices ] =
+	/*static const Vertex VertexData[ NumVertices ] =
 	{
 		{ { 0.0f, 0.0f,  0.5f, 1.0f },{ 1.0f, 0.0f, 0.0f, 1.0f } },  // Top
 		{ { 0.5f,  0.0f,  0.0f, 1.0f },{ 0.0f, 1.0f, 0.0f, 1.0f } },  // Right
 		{ { -0.5f, 0.0f,  0.0f, 1.0f },{ 0.0f, 0.0f, 1.0f, 1.0f } },  // Left
+	};*/
 
+	// Create vertex buffer.
+	static const VertexLit VertexData[ NumVertices ] =
+	{
+		{ { 0.0f, 0.0f,  0.5f, 1.0f },{ 0.0f, 1.0f, 0.0f },{ 1.0f, 0.0f, 0.0f, 1.0f } },  // Top
+		{ { 0.5f,  0.0f,  0.0f, 1.0f },{ 0.0f, 1.0f, 0.0f },{ 0.0f, 1.0f, 0.0f, 1.0f } },  // Right
+		{ { -0.5f, 0.0f,  0.0f, 1.0f },{ 0.0f, 1.0f, 0.0f },{ 0.0f, 0.0f, 1.0f, 1.0f } },  // Left
 	};
 
 	D3D11_SUBRESOURCE_DATA initialData = {};
@@ -38,7 +46,7 @@ void TestObject::Initialise()
 	bufferDesc.ByteWidth = sizeof( VertexData );
 	bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.StructureByteStride = sizeof( Vertex );
+	bufferDesc.StructureByteStride = sizeof( VertexLit );
 
 	// Note the vertex buffer is released in the base class
 	hr = device->CreateBuffer( &bufferDesc, &initialData,
@@ -69,7 +77,7 @@ void TestObject::Render()
 	ID3D11DeviceContext* const context = deviceResources->GetD3DDeviceContext();
 
 	// Draw the triangles
-	UINT strides = sizeof( Vertex );
+	UINT strides = sizeof( VertexLit );
 	UINT offsets = 0;
 	context->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 	context->IASetVertexBuffers( 0, 1, &m_vertexBuffer, &strides, &offsets );
