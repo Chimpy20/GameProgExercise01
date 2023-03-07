@@ -8,7 +8,7 @@ namespace scene
 class FlyingInsect : public Entity
 {
 	static const UINT NumVertices = 6 * 3 * 2;
-	static const FlyingInsect::Vertex InsectBoxVertices[ NumVertices ];
+	static const FlyingInsect::VertexLit InsectBoxVertices[ NumVertices ];
 
 public:
 

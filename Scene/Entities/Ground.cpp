@@ -7,10 +7,11 @@ namespace scene
 {
 
 const float Ground::HalfWidth = 5.0f;
-const DirectX::XMFLOAT4 Ground::Colour = DirectX::XMFLOAT4{ 0.05f, 0.5f, 0.1f, 1.0f };
+const DirectX::XMFLOAT4 Ground::Colour = DirectX::XMFLOAT4{ 0.0f, 1.0f, 0.0f, 1.0f };
 
 Ground::Ground()
 {
+	m_shaderType = Scene::ShaderTypes::Lit;
 }
 
 Ground::~Ground()
@@ -30,12 +31,12 @@ void Ground::Initialise()
 	ID3D11Device* const device = deviceResources->GetD3DDevice();
 
 	// Create vertex buffer.
-	const Vertex VertexData[ NumVertices ] =
+	const VertexLit VertexData[ NumVertices ] =
 	{
-		{ { -HalfWidth, 0.0f, HalfWidth, 1.0f }, Colour},
-		{ { HalfWidth,  0.0f, HalfWidth, 1.0f }, Colour },
-		{ { -HalfWidth, 0.0f, -HalfWidth, 1.0f }, Colour },
-		{ { HalfWidth, 0.0f, -HalfWidth, 1.0f }, Colour }
+		{ { -HalfWidth, 0.0f, HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, Colour},
+		{ { HalfWidth,  0.0f, HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, Colour },
+		{ { -HalfWidth, 0.0f, -HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, Colour },
+		{ { HalfWidth, 0.0f, -HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, Colour }
 
 	};
 
@@ -46,7 +47,7 @@ void Ground::Initialise()
 	bufferDesc.ByteWidth = sizeof( VertexData );
 	bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.StructureByteStride = sizeof( Vertex );
+	bufferDesc.StructureByteStride = sizeof( VertexLit );
 
 	// Note the vertex buffer is released in the base class
 	hr = device->CreateBuffer( &bufferDesc, &initialData,
@@ -77,7 +78,7 @@ void Ground::Render()
 	ID3D11DeviceContext* const context = deviceResources->GetD3DDeviceContext();
 
 	// Draw triangle.
-	UINT strides = sizeof( Vertex );
+	UINT strides = sizeof( VertexLit );
 	UINT offsets = 0;
 	context->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 	context->IASetVertexBuffers( 0, 1, &m_vertexBuffer, &strides, &offsets );

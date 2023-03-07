@@ -19,10 +19,10 @@ View::View( DeviceResources* deviceResources ) :
 	m_viewDirection = XMVECTOR{ -1.0f, 1.0f, 1.0f, 0.0f };
 	m_viewDirection = XMVector3Normalize( m_viewDirection );
 
-	m_ambient = XMFLOAT4{ 0.5f, 0.5f, 0.5f, 0.0f };
-	m_dirLightDir = XMVECTOR{ -0.25f, -0.75f, -0.25f, 0.0f };
+	m_ambient = XMFLOAT4{ 0.2f, 0.2f, 0.2f, 0.0f };
+	m_dirLightDir = XMVECTOR{ -0.25f, -0.25f, -0.25f, 0.0f };
 	m_dirLightDir = XMVector3Normalize( m_dirLightDir );
-	m_dirLightCol = XMFLOAT4{ 0.5f, 0.5f, 0.5f, 0.0f };
+	m_dirLightCol = XMFLOAT4{ 0.8f, 0.8f, 0.8f, 0.0f };
 
 }
 
