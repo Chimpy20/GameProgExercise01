@@ -7,6 +7,11 @@ using namespace DirectX;
 namespace scene
 {
 
+// Constants
+const float FlyingInsect::LerpRate = 1.00f;
+const float FlyingInsect::Acceleration = 1.00f;
+const float FlyingInsect::CruiseHeight = 2.0f;
+
 FlyingInsect::FlyingInsect() :
 	m_speed( 0.0f ),
 	m_movementState( MovementState::Idle ),
@@ -119,13 +124,30 @@ void FlyingInsect::Update()
 {
 	Entity::Update();
 
+	const float frameTime = utils::Timers::GetFrameTime();
+
+	XMVECTOR desiredOrientation = m_desiredOrienation;
+
 	switch( m_movementState )
 	{
 	case MovementState::Cruising:
-		// Carry on in current direction at fixed height
+		{
+			float accelAmount = Acceleration * frameTime;
+			if( accelAmount > 1.0f )
+				accelAmount = 1.0f;
+			m_speed = m_speed + ( ( m_desiredSpeed - m_speed ) * accelAmount );
+
+			// Carry on in current direction at fixed height
+			const XMVECTOR delta = XMVectorScale( m_orientation.r[ 2 ], m_speed * frameTime );
+			SetPosition( m_position + delta );
+
+			desiredOrientation.m128_f32[ 1 ] += ( ( CruiseHeight - m_position[ 1 ] ) * m_speed * 1.0f );
+			desiredOrientation = XMVector3Normalize( desiredOrientation );
+		}
 		break;
 
 	case MovementState::GoingToTarget:
+		m_speed = m_speed + ( ( m_desiredSpeed - m_speed ) * Acceleration * frameTime );
 		// Move to target, stop and enter Idle state when reaching it
 		break;
 
@@ -133,6 +155,13 @@ void FlyingInsect::Update()
 	default:
 		break;
 	}
+
+	float lerpAmount = LerpRate * frameTime;
+	if( lerpAmount > 1.0f )
+		lerpAmount = 1.0f;
+	XMVECTOR newOrientation = XMVectorLerp( m_orientation.r[ 2 ], desiredOrientation, lerpAmount );
+	newOrientation = XMVector3Normalize( newOrientation );
+	SetOrientation( newOrientation );
 }
 
 void FlyingInsect::Render()

@@ -138,7 +138,7 @@ void Scene::Initialise()
 	DirectX::XMVECTOR testOrientation = DirectX::XMVECTOR{ 0.4f, 0.25f, - 0.3f, 0.0f };
 	testOrientation = DirectX::XMVector3Normalize( testOrientation );
 	m_bee->SetDesiredOrientation( testOrientation );
-	m_bee->SetDesiredSpeed( 1.5f );
+	m_bee->SetDesiredSpeed( 1.0f );
 	m_bee->RequestMovementState( FlyingInsect::MovementState::Cruising );
 }
 

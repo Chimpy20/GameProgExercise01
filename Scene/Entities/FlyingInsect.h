@@ -7,9 +7,6 @@ namespace scene
 
 class FlyingInsect : public Entity
 {
-	static const UINT NumVertices = 6 * 3 * 2;
-	static const FlyingInsect::VertexLit InsectBoxVertices[ NumVertices ];
-
 public:
 	enum MovementState
 	{
@@ -37,6 +34,10 @@ public:
 	}
 	inline void				SetDesiredOrientation( const DirectX::XMVECTOR desiredDirection )
 	{
+#ifdef _DEBUG
+		DirectX::XMVECTOR length = DirectX::XMVector3LengthEst( desiredDirection );
+		ASSERT( ( length.m128_f32[ 0 ] < ( 1.0f + Epsilon ) ) && ( length.m128_f32[ 0 ] > ( 1.0f - Epsilon ) ), "Desired Orientation vector isn't normalised.\n" );
+#endif
 		m_desiredOrienation = desiredDirection;
 	}
 
@@ -46,13 +47,19 @@ public:
 	}
 
 protected:
+	static const UINT NumVertices = 6 * 3 * 2;
+	static const FlyingInsect::VertexLit InsectBoxVertices[ NumVertices ];
+	static const float LerpRate;
+	static const float Acceleration;
+	static const float CruiseHeight;
+
 	inline void				SetColour( const DirectX::XMFLOAT4 colour )
 	{
 		m_colour = colour;
 	}
 
 	float					m_speed;
-	UINT					m_padding[ 3 ];
+	UINT					m_padding[ 3 ]{};
 
 private:
 	DirectX::XMFLOAT4		m_colour;
