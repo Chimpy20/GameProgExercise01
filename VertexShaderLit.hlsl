@@ -46,6 +46,7 @@ VS_OUTPUT main( VS_INPUT input )
 	output.position = mul( input.position, mWorld );
 	output.position = mul( output.position, mViewProjection );
 	output.normal = mul( input.normal, (float3x3)mWorld );
+	output.normal = normalize( output.normal );
 
 	return output;
 }
