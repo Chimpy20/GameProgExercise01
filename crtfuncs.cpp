@@ -52,7 +52,7 @@ extern "C"
 		return dest;
 	}
 
-#ifdef _DEBUG
+#pragma function(memcpy)
 	void* __cdecl memcpy( _Out_writes_bytes_all_( _Size ) void* _Dst, _In_reads_bytes_( _Size ) void const* _Src, _In_ size_t _Size )
 	{
 		char* pszDest = (char*)_Dst;
@@ -68,7 +68,6 @@ extern "C"
 		}
 		return _Dst;
 	}
-#endif //_DEBUG
 
 	int _fltused = 0;
 
