@@ -63,9 +63,6 @@
     <ClCompile Include="Utils\File.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\Entities\TestObject.cpp">
-      <Filter>Source Files\Scene\Entities</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\Entity.cpp">
       <Filter>Source Files\Scene</Filter>
     </ClCompile>
@@ -80,6 +77,15 @@
     </ClCompile>
     <ClCompile Include="crtfuncs.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Entities\Bee.cpp">
+      <Filter>Source Files\Scene\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Entities\Flower.cpp">
+      <Filter>Source Files\Scene\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Entities\FlyingInsect.cpp">
+      <Filter>Source Files\Scene\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +131,6 @@
     <ClInclude Include="Utils\File.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\Entities\TestObject.h">
-      <Filter>Source Files\Scene\Entities</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Entity.h">
       <Filter>Source Files\Scene</Filter>
     </ClInclude>
@@ -142,6 +145,15 @@
     </ClInclude>
     <ClInclude Include="crtfuncs.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Entities\Bee.h">
+      <Filter>Source Files\Scene\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Entities\Flower.h">
+      <Filter>Source Files\Scene\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Entities\FlyingInsect.h">
+      <Filter>Source Files\Scene\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
