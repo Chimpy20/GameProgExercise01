@@ -8,11 +8,17 @@ namespace scene
 {
 
 FlyingInsect::FlyingInsect() :
-	m_speed( 0.0f )
+	m_speed( 0.0f ),
+	m_movementState( MovementState::Idle ),
+	m_desiredSpeed( 0.0f )
 {
 	m_colour = XMFLOAT4{ 1.0f, 1.0f, 1.0f, 1.0f };
 
 	m_shaderType = Scene::ShaderTypes::Lit;
+
+	m_desiredOrienation = XMVectorZero();
+	m_targetPosition = XMVectorZero();
+
 }
 
 FlyingInsect::~FlyingInsect()
@@ -112,6 +118,21 @@ void FlyingInsect::Shutdown()
 void FlyingInsect::Update()
 {
 	Entity::Update();
+
+	switch( m_movementState )
+	{
+	case MovementState::Cruising:
+		// Carry on in current direction at fixed height
+		break;
+
+	case MovementState::GoingToTarget:
+		// Move to target, stop and enter Idle state when reaching it
+		break;
+
+	case MovementState::Idle:
+	default:
+		break;
+	}
 }
 
 void FlyingInsect::Render()
@@ -130,6 +151,18 @@ void FlyingInsect::Render()
 	context->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 	context->IASetVertexBuffers( 0, 1, &m_vertexBuffer, &strides, &offsets );
 	context->Draw( NumVertices, 0 );
+}
+
+void FlyingInsect::RequestMovementState( MovementState state )
+{
+	// Handle any one time effects when changing state
+	switch( state )
+	{
+	default:
+		break;
+	}
+
+	m_movementState = state;
 }
 
 } // namespace scene
