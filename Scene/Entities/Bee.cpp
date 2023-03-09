@@ -86,10 +86,10 @@ void Bee::Update()
 			XMVECTOR distanceToOrigin = XMVector3Length( directionToOrigin );
 			if( *distanceToOrigin.m128_f32 > SpawnRadius )
 			{
-				Core* const core = Core::Get();
-				scene::Scene* const scene = core->GetScene();
+				//Core* const core = Core::Get();
+				//scene::Scene* const scene = core->GetScene();
 
-				scene->KillBee( this );
+				m_killSignal = true;
 			}
 		}
 		break;

@@ -54,6 +54,11 @@ public:
 
 	virtual void			OnTargetReached() {}
 
+	inline bool				IsMarkedForKill() const
+	{
+		return m_killSignal;
+	}
+
 protected:
 	static const UINT NumVertices = 6 * 3 * 2;
 	static const FlyingInsect::VertexLit InsectBoxVertices[ NumVertices ];
@@ -69,7 +74,8 @@ protected:
 	}
 
 	float					m_speed;
-	UINT					m_padding[ 3 ]{};
+	bool					m_killSignal;
+	UINT					m_padding[ 2 ]{};
 
 private:
 	DirectX::XMFLOAT4		m_colour;

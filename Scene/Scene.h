@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Containers\List.h"
+
 namespace scene
 {
 
@@ -12,6 +14,8 @@ class Bee;
 // Object containing all the entities and related objects in the scene
 class Scene sealed
 {
+	static const float BeeSpawnInterval;
+
 public:
 	enum ShaderTypes
 	{
@@ -24,17 +28,17 @@ public:
 	Scene();
 	~Scene();
 
-	void				Initialise();
-	void				Shutdown();
+	void						Initialise();
+	void						Shutdown();
 
-	void				Update();
-	void				Render();
+	void						Update();
+	void						Render();
 
-	void				ActivateShaders( const ShaderTypes shaderType );
+	void						ActivateShaders( const ShaderTypes shaderType );
 
-	Flower*				GetFlowerWithMostNectar();
+	Flower*						GetFlowerWithMostNectar();
 
-	void				KillBee( Bee* const bee );
+	//void						KillBee( Bee* const beeToKill );
 
 private:
 	struct ShaderData
@@ -52,10 +56,12 @@ private:
 	
 	ShaderData m_shaderData[ ShaderTypes::NumShaderTypes ];
 
-	Camera*				m_camera;
-	Ground*				m_ground;
-	Flower*				m_flower;
-	Bee*				m_bee;
+	Camera*						m_camera;
+	Ground*						m_ground;
+	Flower*						m_flower;
+	containers::List< Bee* >*	m_beeList;
+	typedef containers::List< Bee* >::iterator BeeListItor;
+	float						m_beeSpawnTimer;
 };
 
 } // namespace scene

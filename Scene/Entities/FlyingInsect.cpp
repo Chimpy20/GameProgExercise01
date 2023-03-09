@@ -16,6 +16,7 @@ const float FlyingInsect::TargetTriggerDistance = 0.2f;
 
 FlyingInsect::FlyingInsect() :
 	m_speed( 0.0f ),
+	m_killSignal( false ),
 	m_movementState( MovementState::Idle ),
 	m_desiredSpeed( 0.0f )
 {

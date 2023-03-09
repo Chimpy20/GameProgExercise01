@@ -14,11 +14,14 @@ using namespace DirectX;
 namespace scene
 {
 
+const float Scene::BeeSpawnInterval = 1.0f;
+
 Scene::Scene() :
 	m_camera( nullptr ),
 	m_ground( nullptr ),
 	m_flower( nullptr ),
-	m_bee( nullptr )
+	m_beeList( nullptr ),
+	m_beeSpawnTimer( 0.0f )
 {
 	m_camera = new Camera();
 
@@ -26,7 +29,7 @@ Scene::Scene() :
 
 	m_flower = new Flower();
 
-	m_bee = new Bee();
+	m_beeList = new containers::List< Bee* >();
 }
 
 Scene::~Scene()
@@ -34,14 +37,23 @@ Scene::~Scene()
 	if( m_camera != nullptr )
 		delete m_camera;
 
+	// delete each bee
+	BeeListItor itor = m_beeList->begin();
+	while( itor != m_beeList->end() )
+	{
+		Bee* bee = *itor;
+		delete bee;
+		++itor;
+	}
+
+	if( m_beeList != nullptr )
+		delete m_beeList;
+
 	if( m_ground != nullptr )
 		delete m_ground;
 
 	if( m_flower != nullptr )
 		delete m_flower;
-
-	if( m_bee != nullptr )
-		delete m_bee;
 }
 
 void Scene::Initialise()
@@ -131,26 +143,21 @@ void Scene::Initialise()
 
 	utils::file::CloseFile( psHandle );
 
-	DirectX::XMVECTOR testPosition = DirectX::XMVECTOR{ -7.0f, 4.0f, -7.0f, 0.0f };
-	//DirectX::XMVECTOR testOrientation = DirectX::XMVECTOR{ 0.4f, -0.25f, - 0.3f, 0.0f };
-	//DirectX::XMVECTOR testTarget = DirectX::XMVECTOR{ 0.25f, 4.0f, -0.3f, 0.0f };
-	//testOrientation = DirectX::XMVector3Normalize( testOrientation );
-	m_bee->SetPosition( testPosition );
-	/*m_bee->SetDesiredOrientation( testOrientation );
-	m_bee->SetDesiredSpeed( 0.5f );
-	m_bee->SetTargetPosition( testTarget );
-	m_bee->RequestMovementState( FlyingInsect::MovementState::Cruising );*/
-
 	m_ground->Initialise();
 	m_flower->Initialise();
-	m_bee->Initialise();
-	m_bee->Spawn();
 }
 
 void Scene::Shutdown()
 {
-	if( m_bee != nullptr )
-		m_bee->Shutdown();
+	// Shutdown each bee
+	BeeListItor itor = m_beeList->begin();
+	while( itor != m_beeList->end() )
+	{
+		Bee* bee = *itor;
+		bee->Shutdown();
+		++itor;
+	}
+
 	m_flower->Shutdown();
 	m_ground->Shutdown();
 
@@ -175,16 +182,53 @@ void Scene::Update()
 {
 	m_camera->Update();
 
-	if( m_bee != nullptr )
-		m_bee->Update();
+	const float frameTime = utils::Timers::GetFrameTime();
+
+	// Spawn a bee periodically
+	m_beeSpawnTimer -= frameTime;
+	if( m_beeSpawnTimer <= 0.0f )
+	{
+		m_beeSpawnTimer += BeeSpawnInterval;
+
+		Bee* const newBee = new Bee();
+		newBee->Initialise();
+		newBee->Spawn();
+		m_beeList->push_back( newBee );
+	}
+
+	// Update each bee
+	BeeListItor itor = m_beeList->begin();
+	while( itor != m_beeList->end() )
+	{
+		Bee* bee = *itor;
+		if( bee->IsMarkedForKill() )
+		{
+			bee->Shutdown();
+			delete bee;
+			itor = m_beeList->erase( itor );
+			continue;
+		}
+		else
+		{
+			bee->Update();
+		}
+		++itor;
+	}
 }
 
 void Scene::Render()
 {
 	m_ground->Render();
 	m_flower->Render();
-	if( m_bee != nullptr )
-		m_bee->Render();
+
+	// Render each bee
+	BeeListItor itor = m_beeList->begin();
+	while( itor != m_beeList->end() )
+	{
+		Bee* bee = *itor;
+		bee->Render();
+		++itor;
+	}
 }
 
 void Scene::ActivateShaders( const ShaderTypes shaderType )
@@ -210,11 +254,26 @@ Flower* Scene::GetFlowerWithMostNectar()
 	return m_flower;
 }
 
-void Scene::KillBee( Bee* const bee )
+/*void Scene::KillBee( Bee* const beeToKill )
 {
-	m_bee->Shutdown();
-	delete m_bee;
-	m_bee = nullptr;
-}
+	// Find the bee in the list
+	bool beeFound = false;
+	BeeListItor itor = m_beeList->begin();
+	while( itor != m_beeList->end() )
+	{
+		Bee* bee = *itor;
+		if( bee == beeToKill )
+		{
+			bee->Shutdown();
+			delete bee;
+			m_beeList->erase( itor );
+			beeFound = true;
+			break;
+		}
+		++itor;
+	}
+
+	ASSERT( beeFound, "Couldn't find bee to kill.\n" );
+}*/
 
 } // namespace scene
