@@ -6,7 +6,7 @@
 namespace scene
 {
 
-const float Ground::HalfWidth = 5.0f;
+const float Ground::HalfWidth = 0.5f;
 const DirectX::XMFLOAT4 Ground::Colour = DirectX::XMFLOAT4{ 0.0f, 1.0f, 0.0f, 1.0f };
 
 Ground::Ground()

@@ -15,21 +15,22 @@ namespace scene
 {
 
 const float Scene::BeeSpawnInterval = 1.0f;
+const float Scene::FlowerGridSizeUnits = 10.0f;
+const float Scene::FlowerBedSizeUnits = FlowerGridSizeUnits * 1.25f;
 
 Scene::Scene() :
 	m_camera( nullptr ),
 	m_ground( nullptr ),
-	m_flower( nullptr ),
 	m_beeList( nullptr ),
+	m_flowerList( nullptr ),
 	m_beeSpawnTimer( 0.0f )
 {
 	m_camera = new Camera();
 
 	m_ground = new Ground();
 
-	m_flower = new Flower();
-
 	m_beeList = new containers::List< Bee* >();
+	m_flowerList = new containers::List< Flower* >();
 }
 
 Scene::~Scene()
@@ -38,22 +39,31 @@ Scene::~Scene()
 		delete m_camera;
 
 	// delete each bee
-	BeeListItor itor = m_beeList->begin();
-	while( itor != m_beeList->end() )
+	BeeListItor beeItor = m_beeList->begin();
+	while( beeItor != m_beeList->end() )
 	{
-		Bee* bee = *itor;
+		Bee* bee = *beeItor;
 		delete bee;
-		++itor;
+		++beeItor;
 	}
 
 	if( m_beeList != nullptr )
 		delete m_beeList;
 
+	// delete each flower
+	FlowerListItor flowerItor = m_flowerList->begin();
+	while( flowerItor != m_flowerList->end() )
+	{
+		Flower* flower = *flowerItor;
+		delete flower;
+		++flowerItor;
+	}
+
+	if( m_flowerList != nullptr )
+		delete m_flowerList;
+
 	if( m_ground != nullptr )
 		delete m_ground;
-
-	if( m_flower != nullptr )
-		delete m_flower;
 }
 
 void Scene::Initialise()
@@ -144,7 +154,22 @@ void Scene::Initialise()
 	utils::file::CloseFile( psHandle );
 
 	m_ground->Initialise();
-	m_flower->Initialise();
+	m_ground->SetScale( FlowerBedSizeUnits );
+
+	// Createa grid of NxX flowers
+	const float FlowerGridSizeAsFloat = (float)( FlowerGridSize - 1 );
+	for( UINT gridX = 0; gridX < FlowerGridSize; gridX++ )
+	{
+		for( UINT gridZ = 0; gridZ < FlowerGridSize; gridZ++ )
+		{
+			Flower* newFlower = new Flower();
+			newFlower->Initialise();
+			m_flowerList->push_back( newFlower );
+			const float xPos = ( ( ( (float)( gridX ) / FlowerGridSizeAsFloat ) - 0.5f ) * FlowerGridSizeUnits );
+			const float zPos = ( ( ( (float)( gridZ ) / FlowerGridSizeAsFloat ) - 0.5f ) * FlowerGridSizeUnits );
+			newFlower->SetPosition( XMVECTOR{ xPos, 0.0f, zPos } );
+		}
+	}
 }
 
 void Scene::Shutdown()
@@ -157,8 +182,15 @@ void Scene::Shutdown()
 		bee->Shutdown();
 		++itor;
 	}
+	// Shutdown each flower
+	FlowerListItor flowerItor = m_flowerList->begin();
+	while( flowerItor != m_flowerList->end() )
+	{
+		Flower* flower = *flowerItor;
+		flower->Shutdown();
+		++flowerItor;
+	}
 
-	m_flower->Shutdown();
 	m_ground->Shutdown();
 
 	for( UINT shaderTypeIndex = 0; shaderTypeIndex < ShaderTypes::NumShaderTypes; ++shaderTypeIndex )
@@ -219,7 +251,15 @@ void Scene::Update()
 void Scene::Render()
 {
 	m_ground->Render();
-	m_flower->Render();
+
+	// Draw each flower
+	FlowerListItor flowerItor = m_flowerList->begin();
+	while( flowerItor != m_flowerList->end() )
+	{
+		Flower* flower = *flowerItor;
+		flower->Render();
+		++flowerItor;
+	}
 
 	// Render each bee
 	BeeListItor itor = m_beeList->begin();
@@ -251,7 +291,7 @@ void Scene::ActivateShaders( const ShaderTypes shaderType )
 
 Flower* Scene::GetFlowerWithMostNectar()
 {
-	return m_flower;
+	return *m_flowerList->begin();
 }
 
 /*void Scene::KillBee( Bee* const beeToKill )

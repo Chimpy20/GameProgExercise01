@@ -15,6 +15,10 @@ class Bee;
 class Scene sealed
 {
 	static const float BeeSpawnInterval;
+	static const float FlowerBedSizeUnits;
+	static const float FlowerGridSizeUnits;
+	static const UINT FlowerGridSize = 4;
+	static_assert( FlowerGridSize > 0, "Not enough flowers" );
 
 public:
 	enum ShaderTypes
@@ -38,8 +42,6 @@ public:
 
 	Flower*						GetFlowerWithMostNectar();
 
-	//void						KillBee( Bee* const beeToKill );
-
 private:
 	struct ShaderData
 	{
@@ -58,10 +60,13 @@ private:
 
 	Camera*						m_camera;
 	Ground*						m_ground;
-	Flower*						m_flower;
-	containers::List< Bee* >*	m_beeList;
+
+	containers::List< Bee* >* m_beeList;
 	typedef containers::List< Bee* >::iterator BeeListItor;
 	float						m_beeSpawnTimer;
+
+	containers::List< Flower* >* m_flowerList;
+	typedef containers::List< Flower* >::iterator FlowerListItor;
 };
 
 } // namespace scene

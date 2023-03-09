@@ -8,7 +8,7 @@ namespace scene
 {
 
 // Constants
-const float FlyingInsect::LerpRate = 2.0f;
+const float FlyingInsect::LerpRate = 4.0f;
 const float FlyingInsect::Acceleration = 0.50f;
 const float FlyingInsect::SpawnRadius = 10.0f;
 const float FlyingInsect::CruiseHeight = 2.0f;
