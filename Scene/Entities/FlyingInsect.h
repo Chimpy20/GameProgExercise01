@@ -20,19 +20,25 @@ public:
 	FlyingInsect();
 	~FlyingInsect();
 
-	void					Initialise();
-	void					Shutdown();
+	virtual void			Initialise();
+	virtual void			Shutdown();
 
-	void					Update();
-	void					Render();
+	virtual void			Update();
+	virtual void			Render();
+
+	virtual void			Spawn();
 
 	void					RequestMovementState( MovementState state );
+	MovementState			GetMovementState() const
+	{
+		return m_movementState;
+	}
 
 	inline void				SetDesiredSpeed( const float desiredSpeed )
 	{
 		m_desiredSpeed = desiredSpeed;
 	}
-	inline void				SetDesiredOrientation( const DirectX::XMVECTOR desiredDirection )
+	inline void				SetDesiredOrientation( const DirectX::XMVECTOR& desiredDirection )
 	{
 #ifdef _DEBUG
 		DirectX::XMVECTOR length = DirectX::XMVector3LengthEst( desiredDirection );
@@ -41,19 +47,23 @@ public:
 		m_desiredOrienation = desiredDirection;
 	}
 
-	inline void				SetTargetPosition( const DirectX::XMVECTOR targetPosition )
+	inline void				SetTargetPosition( const DirectX::XMVECTOR& targetPosition )
 	{
 		m_targetPosition = targetPosition;
 	}
+
+	virtual void			OnTargetReached() {}
 
 protected:
 	static const UINT NumVertices = 6 * 3 * 2;
 	static const FlyingInsect::VertexLit InsectBoxVertices[ NumVertices ];
 	static const float LerpRate;
 	static const float Acceleration;
+	static const float SpawnRadius;
 	static const float CruiseHeight;
+	static const float TargetTriggerDistance;
 
-	inline void				SetColour( const DirectX::XMFLOAT4 colour )
+	inline void				SetColour( const DirectX::XMFLOAT4& colour )
 	{
 		m_colour = colour;
 	}

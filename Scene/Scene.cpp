@@ -131,20 +131,26 @@ void Scene::Initialise()
 
 	utils::file::CloseFile( psHandle );
 
+	DirectX::XMVECTOR testPosition = DirectX::XMVECTOR{ -7.0f, 4.0f, -7.0f, 0.0f };
+	//DirectX::XMVECTOR testOrientation = DirectX::XMVECTOR{ 0.4f, -0.25f, - 0.3f, 0.0f };
+	//DirectX::XMVECTOR testTarget = DirectX::XMVECTOR{ 0.25f, 4.0f, -0.3f, 0.0f };
+	//testOrientation = DirectX::XMVector3Normalize( testOrientation );
+	m_bee->SetPosition( testPosition );
+	/*m_bee->SetDesiredOrientation( testOrientation );
+	m_bee->SetDesiredSpeed( 0.5f );
+	m_bee->SetTargetPosition( testTarget );
+	m_bee->RequestMovementState( FlyingInsect::MovementState::Cruising );*/
+
 	m_ground->Initialise();
 	m_flower->Initialise();
 	m_bee->Initialise();
-
-	DirectX::XMVECTOR testOrientation = DirectX::XMVECTOR{ 0.4f, 0.25f, - 0.3f, 0.0f };
-	testOrientation = DirectX::XMVector3Normalize( testOrientation );
-	m_bee->SetDesiredOrientation( testOrientation );
-	m_bee->SetDesiredSpeed( 1.0f );
-	m_bee->RequestMovementState( FlyingInsect::MovementState::Cruising );
+	m_bee->Spawn();
 }
 
 void Scene::Shutdown()
 {
-	m_bee->Shutdown();
+	if( m_bee != nullptr )
+		m_bee->Shutdown();
 	m_flower->Shutdown();
 	m_ground->Shutdown();
 
@@ -169,14 +175,16 @@ void Scene::Update()
 {
 	m_camera->Update();
 
-	m_bee->Update();
+	if( m_bee != nullptr )
+		m_bee->Update();
 }
 
 void Scene::Render()
 {
 	m_ground->Render();
 	m_flower->Render();
-	m_bee->Render();
+	if( m_bee != nullptr )
+		m_bee->Render();
 }
 
 void Scene::ActivateShaders( const ShaderTypes shaderType )
@@ -195,6 +203,18 @@ void Scene::ActivateShaders( const ShaderTypes shaderType )
 	deviceContext->VSSetShader( m_shaderData[ shaderType ].vertexShader, nullptr, 0 );
 	deviceContext->GSSetShader( nullptr, nullptr, 0 );
 	deviceContext->PSSetShader( m_shaderData[ shaderType ].pixelShader, nullptr, 0 );
+}
+
+Flower* Scene::GetFlowerWithMostNectar()
+{
+	return m_flower;
+}
+
+void Scene::KillBee( Bee* const bee )
+{
+	m_bee->Shutdown();
+	delete m_bee;
+	m_bee = nullptr;
 }
 
 } // namespace scene

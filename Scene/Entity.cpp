@@ -90,7 +90,7 @@ void Entity::Render()
 	scene->ActivateShaders( m_shaderType );
 }
 
-void Entity::SetPosition( const XMVECTOR position )
+void Entity::SetPosition( const XMVECTOR& position )
 {
 	m_position.v = position;
 	m_position.f[ 3 ] = 1.0f;

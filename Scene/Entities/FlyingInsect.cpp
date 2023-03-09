@@ -8,9 +8,11 @@ namespace scene
 {
 
 // Constants
-const float FlyingInsect::LerpRate = 1.00f;
-const float FlyingInsect::Acceleration = 1.00f;
+const float FlyingInsect::LerpRate = 2.0f;
+const float FlyingInsect::Acceleration = 0.50f;
+const float FlyingInsect::SpawnRadius = 10.0f;
 const float FlyingInsect::CruiseHeight = 2.0f;
+const float FlyingInsect::TargetTriggerDistance = 0.2f;
 
 FlyingInsect::FlyingInsect() :
 	m_speed( 0.0f ),
@@ -22,6 +24,7 @@ FlyingInsect::FlyingInsect() :
 	m_shaderType = Scene::ShaderTypes::Lit;
 
 	m_desiredOrienation = XMVectorZero();
+	m_desiredOrienation.m128_f32[ 2 ] = 1.0f;
 	m_targetPosition = XMVectorZero();
 
 }
@@ -120,6 +123,25 @@ void FlyingInsect::Shutdown()
 	Entity::Shutdown();
 }
 
+void FlyingInsect::Spawn()
+{
+	//assuming centre of flower bed is at the origin
+	const float theta = (float)(utils::Rand() % 100000) / 100000.0f * XM_2PI;
+
+	XMVECTOR spawnPosition;
+	spawnPosition.m128_f32[ 0 ] = XMScalarSin( theta ) * SpawnRadius;
+	spawnPosition.m128_f32[ 1 ] = CruiseHeight;
+	spawnPosition.m128_f32[ 2 ] = XMScalarCos( theta ) * SpawnRadius;
+	spawnPosition.m128_f32[ 3 ] = 0.0f;
+
+	SetPosition( spawnPosition );
+
+	// Just face the origin
+	XMVECTOR directionToOrigin = -spawnPosition;
+	directionToOrigin = XMVector3Normalize( directionToOrigin );
+	SetOrientation( directionToOrigin );
+}
+
 void FlyingInsect::Update()
 {
 	Entity::Update();
@@ -127,14 +149,14 @@ void FlyingInsect::Update()
 	const float frameTime = utils::Timers::GetFrameTime();
 
 	XMVECTOR desiredOrientation = m_desiredOrienation;
+	float accelAmount = Acceleration * frameTime;
+	if( accelAmount > 1.0f )
+		accelAmount = 1.0f;
 
 	switch( m_movementState )
 	{
 	case MovementState::Cruising:
 		{
-			float accelAmount = Acceleration * frameTime;
-			if( accelAmount > 1.0f )
-				accelAmount = 1.0f;
 			m_speed = m_speed + ( ( m_desiredSpeed - m_speed ) * accelAmount );
 
 			// Carry on in current direction at fixed height
@@ -147,8 +169,25 @@ void FlyingInsect::Update()
 		break;
 
 	case MovementState::GoingToTarget:
-		m_speed = m_speed + ( ( m_desiredSpeed - m_speed ) * Acceleration * frameTime );
-		// Move to target, stop and enter Idle state when reaching it
+		{
+			m_speed = m_speed + ( ( m_desiredSpeed - m_speed ) * accelAmount );
+
+			const XMVECTOR delta = XMVectorScale( m_orientation.r[ 2 ], m_speed * frameTime );
+			SetPosition( m_position + delta );
+
+			// Move to target, stop and enter Idle state when reaching it
+			XMVECTOR desiredDirection = m_targetPosition - m_position;
+
+			XMVECTOR distanceToTargetVec = XMVector3Length( desiredDirection );
+			const float distanceToTarget = *distanceToTargetVec.m128_f32;
+			if( distanceToTarget < TargetTriggerDistance )
+			{
+				RequestMovementState( MovementState::Idle );
+				OnTargetReached();
+			}
+
+			desiredOrientation = XMVector3Normalize( desiredDirection );
+		}
 		break;
 
 	case MovementState::Idle:

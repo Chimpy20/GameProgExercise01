@@ -32,6 +32,10 @@ public:
 
 	void				ActivateShaders( const ShaderTypes shaderType );
 
+	Flower*				GetFlowerWithMostNectar();
+
+	void				KillBee( Bee* const bee );
+
 private:
 	struct ShaderData
 	{
