@@ -22,6 +22,12 @@ public:
 		DirectX::XMFLOAT4 color;
 	};
 
+	struct ShaderConstants
+	{
+		DirectX::XMMATRIX worldMatrix;
+		DirectX::XMFLOAT4 tint;
+	};
+
 	Entity();
 	~Entity();
 
@@ -36,6 +42,11 @@ public:
 	void						SetOrientation( const DirectX::XMMATRIX& orientation );
 	void						SetOrientation( const DirectX::XMVECTOR& orientation );
 	void						SetScale( const float scale );
+
+	inline void					SetColour( const DirectX::XMFLOAT4 colour )
+	{
+		m_colour = colour;
+	}
 
 	// Accessors
 	inline const DirectX::XMVECTOR&	GetPosition() const
@@ -59,9 +70,10 @@ protected:
 	ID3D11Buffer*				m_vertexBuffer;
 	DirectX::XMVECTORF32		m_position;
 	DirectX::XMMATRIX			m_orientation;
+	DirectX::XMFLOAT4			m_colour;
+	DirectX::XMVECTORF32		m_scale;
 
 	Scene::ShaderTypes			m_shaderType;
-	DirectX::XMVECTORF32		m_scale;
 
 private:
 	ID3D11Buffer*				m_constantBuffer;

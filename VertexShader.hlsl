@@ -22,6 +22,7 @@ cbuffer Constants : register( b0 )
 cbuffer Constants : register( b1 )
 {
 	float4x4 mWorld;
+	float vTint;
 }
 
 struct VS_INPUT
@@ -39,7 +40,7 @@ struct VS_OUTPUT
 VS_OUTPUT main( VS_INPUT input )
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
-	output.color = input.color;
+	output.color = input.color * vTint;
 	float4 inputPos = float4(input.position, 1.0f);
 	output.position = mul( inputPos, mWorld );
 	output.position = mul( output.position, mViewProjection );
