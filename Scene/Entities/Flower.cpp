@@ -13,11 +13,15 @@ const float Flower::BaseRadius = 0.2f;
 const float Flower::RimRadius = 0.2f;
 const float Flower::PetalHeight = 0.3f;
 const float Flower::PetalWidth = 0.5f;
+const float Flower::InitialNectarLevelMin = 0.2f;
+const float Flower::InitialNectarLevelMax = 0.8f;
+const float Flower::NectarRechargeRate = 1.0f / 10.0f; // Charge up over 10 seconds
 
 const DirectX::XMFLOAT4 Flower::CentreColourFull = XMFLOAT4{ 0.9f, 0.1f, 0.9f, 1.0f };
 const DirectX::XMFLOAT4 Flower::RimColourFull = XMFLOAT4{ 1.0f, 1.0f, 0.1f, 1.0f };
 
-Flower::Flower()
+Flower::Flower():
+	m_nectarLevel( 0.0f )
 {
 }
 
@@ -124,6 +128,9 @@ void Flower::Initialise()
 		delete[] petalVertices;
 
 	SetScale( 1.0f );
+
+	// Set the initial nectar level
+	m_nectarLevel = (float)( utils::Rand() % 100000 ) / 100000.0f * ( InitialNectarLevelMax - InitialNectarLevelMin ) + InitialNectarLevelMin;
 }
 
 void Flower::Shutdown()
@@ -134,6 +141,12 @@ void Flower::Shutdown()
 void Flower::Update()
 {
 	Entity::Update();
+
+	const float timeStep = utils::Timers::GetFrameTime();
+
+	m_nectarLevel += ( NectarRechargeRate * timeStep );
+	if( m_nectarLevel > 1.0f )
+		m_nectarLevel = 1.0f;
 }
 
 void Flower::Render()
@@ -153,6 +166,11 @@ void Flower::Render()
 	context->IASetVertexBuffers( 0, 1, &m_vertexBuffer, &strides, &offsets );
 	static const UINT NumPetalVertices = NumPetals * 9;
 	context->Draw( NumPetalVertices, 0 );
+}
+
+void Flower::Deplete()
+{
+	m_nectarLevel = 0.0f;
 }
 
 } // namespace scene

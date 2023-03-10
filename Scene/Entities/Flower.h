@@ -17,6 +17,10 @@ public:
 	static const DirectX::XMFLOAT4 CentreColourFull;
 	static const DirectX::XMFLOAT4 RimColourFull;
 
+	static const float InitialNectarLevelMin;
+	static const float InitialNectarLevelMax;
+	static const float NectarRechargeRate;
+
 	Flower();
 	~Flower();
 
@@ -25,7 +29,16 @@ public:
 
 	void				Update();
 	void				Render();
+
+	inline float		GetNectarLevel() const
+	{
+		return m_nectarLevel;
+	}
+
+	void				Deplete();
+
 private:
+	float				m_nectarLevel;
 };
 
 } // namespace scene

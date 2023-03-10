@@ -18,6 +18,7 @@ class Scene sealed
 	static const float FlowerBedSizeUnits;
 	static const float FlowerGridSizeUnits;
 	static const UINT FlowerGridSize = 4;
+	static const UINT MaxBees = FlowerGridSize * FlowerGridSize;
 	static_assert( FlowerGridSize > 0, "Not enough flowers" );
 
 public:

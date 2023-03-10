@@ -13,7 +13,8 @@ const float Bee::FlowerActivationRange = 1.0f;
 
 Bee::Bee() :
 	m_beeState( BeeState::None ),
-	m_targetFlower( nullptr )
+	m_targetFlower( nullptr ),
+	m_initialTargetNectarLevel( 0.0f )
 {
 	m_scale.v = XMVECTOR{ 0.25f, 0.15f, 0.2f, 0.0f };
 }
@@ -36,22 +37,21 @@ void Bee::Update()
 	switch( m_beeState )
 	{
 	case BeeState::PickingFlower:
-		if( m_targetFlower == nullptr )
+		PickFlower();
+		if( m_targetFlower != nullptr )
 		{
-			PickFlower();
-			if( m_targetFlower != nullptr )
-			{
-				m_beeState = BeeState::GoingToFlower;
+			m_beeState = BeeState::GoingToFlower;
 
-				// Get the direction the target flower
-				XMVECTOR targetPos = m_targetFlower->GetPosition();
-				XMVECTOR desiredDirection = targetPos - m_position;
-				desiredDirection = XMVector3Normalize( desiredDirection );
+			m_initialTargetNectarLevel = m_targetFlower->GetNectarLevel();
 
-				SetDesiredOrientation( desiredDirection );
-				SetDesiredSpeed( MaxSpeed );
-				RequestMovementState( MovementState::Cruising );
-			}
+			// Get the direction the target flower
+			XMVECTOR targetPos = m_targetFlower->GetPosition();
+			XMVECTOR desiredDirection = targetPos - m_position;
+			desiredDirection = XMVector3Normalize( desiredDirection );
+
+			SetDesiredOrientation( desiredDirection );
+			SetDesiredSpeed( MaxSpeed );
+			RequestMovementState( MovementState::Cruising );
 		}
 		break;
 	case BeeState::GoingToFlower:
@@ -73,9 +73,15 @@ void Bee::Update()
 					RequestMovementState( MovementState::GoingToTarget );
 				}
 			}
-			else
+
+			// Pick another flower if the target one has no nectar
+			if( m_targetFlower->GetNectarLevel() < m_initialTargetNectarLevel )
 			{
+				// Need to clear current target for the picking state
+				m_beeState = BeeState::PickingFlower;
+				m_targetFlower = nullptr;
 			}
+			
 		}
 		break;
 	case BeeState::Leaving:
@@ -108,15 +114,24 @@ void Bee::PickFlower()
 
 void Bee::OnTargetReached()
 {
-	ASSERT( m_beeState == BeeState::GoingToFlower, "Should be going to flower.\n" );
+#ifdef _DEBUG
+	if( m_beeState != BeeState::GoingToFlower )
+		DEBUG_MESSAGE( "Bee::OnTargetReached() - Should be going to flower but is in state %u.\n", m_beeState );
+#endif
 
-	// Reflect orientation in the Y-axis
-	XMVECTOR newOrientation = GetOrientationAsVector();
-	newOrientation.m128_f32[ 1 ] = -newOrientation.m128_f32[ 1 ];
-	SetOrientation( newOrientation );
+	if( m_beeState == BeeState::GoingToFlower )
+	{
+		// Reflect orientation in the Y-axis
+		XMVECTOR newOrientation = GetOrientationAsVector();
+		newOrientation.m128_f32[ 1 ] = -newOrientation.m128_f32[ 1 ];
+		SetOrientation( newOrientation );
 
-	RequestMovementState( MovementState::Cruising );
-	m_beeState = BeeState::Leaving;
+		RequestMovementState( MovementState::Cruising );
+		m_beeState = BeeState::Leaving;
+		m_targetFlower->Deplete();
+		m_targetFlower = nullptr;
+		m_initialTargetNectarLevel = 0.0f;
+	}
 }
 
 } // namespace scene

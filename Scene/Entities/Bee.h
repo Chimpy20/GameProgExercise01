@@ -34,6 +34,7 @@ private:
 
 	BeeState				m_beeState;
 	Flower*					m_targetFlower;
+	float					m_initialTargetNectarLevel;
 };
 
 } // namespace scene

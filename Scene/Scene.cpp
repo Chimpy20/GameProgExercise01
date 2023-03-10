@@ -14,7 +14,7 @@ using namespace DirectX;
 namespace scene
 {
 
-const float Scene::BeeSpawnInterval = 1.0f;
+const float Scene::BeeSpawnInterval = 4.0f;
 const float Scene::FlowerGridSizeUnits = 10.0f;
 const float Scene::FlowerBedSizeUnits = FlowerGridSizeUnits * 1.25f;
 
@@ -218,7 +218,7 @@ void Scene::Update()
 
 	// Spawn a bee periodically
 	m_beeSpawnTimer -= frameTime;
-	if( m_beeSpawnTimer <= 0.0f )
+	if( ( m_beeSpawnTimer <= 0.0f ) && ( m_beeList->size() < MaxBees ) )
 	{
 		m_beeSpawnTimer += BeeSpawnInterval;
 
@@ -245,6 +245,15 @@ void Scene::Update()
 			bee->Update();
 		}
 		++itor;
+	}
+
+	// Update flowers
+	FlowerListItor flowerItor = m_flowerList->begin();
+	while( flowerItor != m_flowerList->end() )
+	{
+		Flower* flower = *flowerItor;
+		flower->Update();
+		++flowerItor;
 	}
 }
 
@@ -291,29 +300,24 @@ void Scene::ActivateShaders( const ShaderTypes shaderType )
 
 Flower* Scene::GetFlowerWithMostNectar()
 {
-	return *m_flowerList->begin();
-}
+	float highestNectarLevel = 0.0f;
+	Flower* mostNectarFlower = nullptr;
 
-/*void Scene::KillBee( Bee* const beeToKill )
-{
-	// Find the bee in the list
-	bool beeFound = false;
-	BeeListItor itor = m_beeList->begin();
-	while( itor != m_beeList->end() )
+	FlowerListItor flowerItor = m_flowerList->begin();
+	while( flowerItor != m_flowerList->end() )
 	{
-		Bee* bee = *itor;
-		if( bee == beeToKill )
+		Flower* flower = *flowerItor;
+		const float nectarLevel = flower->GetNectarLevel();
+		if( nectarLevel > highestNectarLevel )
 		{
-			bee->Shutdown();
-			delete bee;
-			m_beeList->erase( itor );
-			beeFound = true;
-			break;
+			mostNectarFlower = flower;
+			highestNectarLevel = nectarLevel;
 		}
-		++itor;
+		++flowerItor;
 	}
 
-	ASSERT( beeFound, "Couldn't find bee to kill.\n" );
-}*/
+	ASSERT( mostNectarFlower != nullptr, "Couldn't find a flower with most nectar.\n" );
+	return mostNectarFlower;
+}
 
 } // namespace scene
