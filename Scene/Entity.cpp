@@ -35,8 +35,8 @@ void Entity::Initialise()
 
 	ID3D11Device* const device = deviceResources->GetD3DDevice();
 
-	CD3D11_BUFFER_DESC worldBufferDesc( sizeof( DirectX::XMMATRIX ), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE );
-	hr = device->CreateBuffer( &worldBufferDesc, nullptr, &m_constantBuffer );
+	CD3D11_BUFFER_DESC shaderConstantDesc( sizeof( ShaderConstants ), D3D11_BIND_CONSTANT_BUFFER, D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE );
+	hr = device->CreateBuffer( &shaderConstantDesc, nullptr, &m_constantBuffer );
 	ASSERT_HANDLE( hr );
 }
 
