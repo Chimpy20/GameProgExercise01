@@ -68,17 +68,11 @@ protected:
 	static const float CruiseHeight;
 	static const float TargetTriggerDistance;
 
-	inline void				SetColour( const DirectX::XMFLOAT4& colour )
-	{
-		m_colour = colour;
-	}
-
 	float					m_speed;
 	bool					m_killSignal;
 	UINT					m_padding[ 2 ]{};
 
 private:
-	DirectX::XMFLOAT4		m_colour;
 	DirectX::XMVECTOR		m_desiredOrienation;
 	DirectX::XMVECTOR		m_targetPosition;
 	float					m_desiredSpeed;

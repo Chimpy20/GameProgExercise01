@@ -7,11 +7,12 @@ namespace scene
 {
 
 const float Ground::HalfWidth = 0.5f;
-const DirectX::XMFLOAT4 Ground::Colour = DirectX::XMFLOAT4{ 0.1f, 0.8f, 0.1f, 1.0f };
+const DirectX::XMFLOAT4 Ground::Colour = DirectX::XMFLOAT4{ 0.1f, 0.6f, 0.1f, 1.0f };
 
 Ground::Ground()
 {
 	m_shaderType = Scene::ShaderTypes::Lit;
+	SetColour( Colour );
 }
 
 Ground::~Ground()
@@ -33,10 +34,10 @@ void Ground::Initialise()
 	// Create vertex buffer.
 	const VertexLit VertexData[ NumVertices ] =
 	{
-		{ { -HalfWidth, 0.0f, HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, Colour},
-		{ { HalfWidth,  0.0f, HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, Colour },
-		{ { -HalfWidth, 0.0f, -HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, Colour },
-		{ { HalfWidth, 0.0f, -HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, Colour }
+		{ { -HalfWidth, 0.0f, HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f } },
+		{ { HalfWidth,  0.0f, HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f},{ 1.0f, 1.0f, 1.0f, 1.0f } },
+		{ { -HalfWidth, 0.0f, -HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f } },
+		{ { HalfWidth, 0.0f, -HalfWidth, 1.0f }, {0.0f, 1.0f, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f } }
 
 	};
 
