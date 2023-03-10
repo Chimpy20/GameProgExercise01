@@ -14,6 +14,7 @@ Entity::Entity() :
 	m_constantBuffer( nullptr ),
 	m_shaderType( Scene::ShaderTypes::Unlit )
 {
+	m_colour = XMFLOAT4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	m_orientation = XMMatrixIdentity();
 	m_position.v = XMVectorZero();
 	m_position.f[ 3 ] = 1.0f;
@@ -62,6 +63,8 @@ void Entity::Render()
 
 	ID3D11DeviceContext* const deviceContext = deviceResources->GetD3DDeviceContext();
 
+	ShaderConstants shaderConstants{};
+
 	// Get the orientation matrix ready for a world matrix
 	XMMATRIX worldMatrix = m_orientation;
 
@@ -73,7 +76,9 @@ void Entity::Render()
 	scaledWorldMatrix.r[ 3 ] = m_position;
 
 	// Matrix needs to be transposed for the vertex shader
-	XMMATRIX worldMatrixTransposed = XMMatrixTranspose( scaledWorldMatrix );
+	shaderConstants.worldMatrix = XMMatrixTranspose( scaledWorldMatrix );
+	shaderConstants.tint = m_colour;
+
 
 	ASSERT( m_constantBuffer != nullptr, "Constant buffer doesn't exist. Has View::Initialise() been called?\n" );
 
@@ -81,7 +86,7 @@ void Entity::Render()
 	D3D11_MAPPED_SUBRESOURCE mapped;
 	hr = deviceContext->Map( m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped );
 	ASSERT_HANDLE( hr );
-	memcpy( mapped.pData, &worldMatrixTransposed, sizeof( XMMATRIX ) );
+	memcpy( mapped.pData, &shaderConstants, sizeof( ShaderConstants ) );
 	deviceContext->Unmap( m_constantBuffer, 0 );
 
 	// Actually set the buffer
