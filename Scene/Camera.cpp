@@ -9,8 +9,8 @@ using namespace DirectX;
 namespace scene
 {
 
-const float  Camera::DefaultDistanceFromFocus = 10.0f;
-const float  Camera::DefaultVerticalRotation = XM_2PI * 0.1f;
+const float  Camera::DefaultDistanceFromFocus = 15.0f;
+const float  Camera::DefaultVerticalRotation = XM_2PI * 0.09f;
 
 Camera::Camera() :
 	m_horzRotation( 0.0f ),

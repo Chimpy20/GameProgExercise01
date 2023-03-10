@@ -8,11 +8,12 @@ using namespace DirectX;
 namespace scene
 {
 
-const float Bee::MaxSpeed = 1.5f;
+const float Bee::MaxSpeed = 4.0f;
 const float Bee::FlowerActivationRange = 1.0f;
 
 Bee::Bee() :
 	m_beeState( BeeState::None ),
+	m_speedVariation( 0.0f ),
 	m_targetFlower( nullptr ),
 	m_initialTargetNectarLevel( 0.0f )
 {
@@ -28,6 +29,8 @@ void Bee::Initialise()
 	FlyingInsect::Initialise();
 
 	m_beeState = BeeState::PickingFlower;
+
+	m_speedVariation = ( (float)( utils::Rand() % 100000 ) / 100000.0f ) * 0.50f;
 }
 
 void Bee::Update()
@@ -50,7 +53,7 @@ void Bee::Update()
 			desiredDirection = XMVector3Normalize( desiredDirection );
 
 			SetDesiredOrientation( desiredDirection );
-			SetDesiredSpeed( MaxSpeed );
+			SetDesiredSpeed( MaxSpeed * 0.50f + m_speedVariation );
 			RequestMovementState( MovementState::Cruising );
 		}
 		break;
@@ -69,7 +72,7 @@ void Bee::Update()
 				{
 					// Start to go to target
 					SetTargetPosition( targetPos );
-					SetDesiredSpeed( MaxSpeed * 0.5f );
+					SetDesiredSpeed( MaxSpeed * 0.50f );
 					RequestMovementState( MovementState::GoingToTarget );
 				}
 			}
@@ -125,6 +128,13 @@ void Bee::OnTargetReached()
 		XMVECTOR newOrientation = GetOrientationAsVector();
 		newOrientation.m128_f32[ 1 ] = -newOrientation.m128_f32[ 1 ];
 		SetOrientation( newOrientation );
+		SetDesiredSpeed( MaxSpeed );
+
+		// Set desired orientation directly away from the origin
+		XMVECTOR directionFromOrigin = m_position;
+		directionFromOrigin.m128_f32[ 1 ] = 0.0f;
+		directionFromOrigin = XMVector3Normalize( directionFromOrigin );
+		SetDesiredOrientation( directionFromOrigin );
 
 		RequestMovementState( MovementState::Cruising );
 		m_beeState = BeeState::Leaving;

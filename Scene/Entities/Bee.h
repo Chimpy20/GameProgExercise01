@@ -33,6 +33,7 @@ private:
 	void					PickFlower();
 
 	BeeState				m_beeState;
+	float					m_speedVariation;
 	Flower*					m_targetFlower;
 	float					m_initialTargetNectarLevel;
 };

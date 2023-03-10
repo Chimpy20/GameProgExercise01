@@ -35,6 +35,11 @@ public:
 		return m_nectarLevel;
 	}
 
+	friend bool operator> ( const Flower& l, const Flower& r )
+	{
+		return( l.m_nectarLevel < r.m_nectarLevel );
+	}
+
 	void				Deplete();
 
 private:

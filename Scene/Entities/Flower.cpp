@@ -23,6 +23,7 @@ const DirectX::XMFLOAT4 Flower::RimColourFull = XMFLOAT4{ 1.0f, 1.0f, 0.1f, 1.0f
 Flower::Flower():
 	m_nectarLevel( 0.0f )
 {
+	m_shaderType = Scene::ShaderTypes::Lit;
 }
 
 Flower::~Flower()
@@ -43,67 +44,114 @@ void Flower::Initialise()
 
 	// Create the flower petals
 	static const UINT NumPetalVertices = NumPetals * 9;
-	Vertex* const petalVertices = new Vertex[ NumPetalVertices ];
+	VertexLit* const petalVertices = new VertexLit[ NumPetalVertices ];
 	ASSERT( petalVertices != nullptr, "Couldn't create petal vertices.\n" );
 
+	const XMVECTOR petalLengthVec = XMVector3Length( XMVECTOR{ 0.0f, PetalHeight, PetalWidth } );
+	const float petalLength = *petalLengthVec.m128_f32;
+	const float petalWidthScaled = PetalWidth / petalLength;
+	const float petalHeightScaled = PetalHeight / petalLength;
+
 	const float angleStride = DirectX::XM_2PI / static_cast<float>( NumPetals );
-	Vertex* vertex = petalVertices;
+	VertexLit* vertex = petalVertices;
 	float startingAngle = 0.0f;
 	for( UINT petalIndex = 0; petalIndex < NumPetals; ++petalIndex )
 	{
+		const float startingAngleSin = DirectX::XMScalarSin( startingAngle );
+		const float startingAngleCos = DirectX::XMScalarCos( startingAngle );
+
+		const float startingAnglePlusStrideSin = DirectX::XMScalarSin( startingAngle + angleStride );
+		const float startingAnglePlusStrideCos = DirectX::XMScalarCos( startingAngle + angleStride );
+
 		// The centre
 		vertex->position.x = 0.0f;
 		vertex->position.y = YOffset;
 		vertex->position.z = 0.0f;
+		vertex->position.w = 1.0f;
+		vertex->normal.x = 0.0f;
+		vertex->normal.y = 1.0f;
+		vertex->normal.z = 0.0f;
 		vertex->color = RimColourFull;
 		vertex++;
 
-		vertex->position.x = DirectX::XMScalarSin( startingAngle ) * BaseRadius;
+		vertex->position.x = startingAngleSin * BaseRadius;
 		vertex->position.y = YOffset;
-		vertex->position.z = DirectX::XMScalarCos( startingAngle ) * BaseRadius;
+		vertex->position.z = startingAngleCos * BaseRadius;
+		vertex->position.w = 1.0f;
+		vertex->normal.x = 0.0f;
+		vertex->normal.y = 1.0f;
+		vertex->normal.z = 0.0f;
 		vertex->color = RimColourFull;
 		vertex++;
 
-		vertex->position.x = DirectX::XMScalarSin( startingAngle + angleStride ) * BaseRadius;
+		vertex->position.x = startingAnglePlusStrideSin * BaseRadius;
 		vertex->position.y = YOffset;
-		vertex->position.z = DirectX::XMScalarCos( startingAngle + angleStride ) * BaseRadius;
+		vertex->position.z = startingAnglePlusStrideCos * BaseRadius;
+		vertex->position.w = 1.0f;
+		vertex->normal.x = 0.0f;
+		vertex->normal.y = 1.0f;
+		vertex->normal.z = 0.0f;
 		vertex->color = RimColourFull;
 		vertex++;
 		
 		// The petals
-		vertex->position.x = DirectX::XMScalarSin( startingAngle ) * BaseRadius;
+		vertex->position.x = startingAngleSin * BaseRadius;
 		vertex->position.y = YOffset;
-		vertex->position.z = DirectX::XMScalarCos( startingAngle ) * BaseRadius;
+		vertex->position.z = startingAngleCos * BaseRadius;
+		vertex->position.w = 1.0f;
+		vertex->normal.x = -petalHeightScaled * startingAngleSin;
+		vertex->normal.y = petalWidthScaled;
+		vertex->normal.z = -petalHeightScaled * startingAngleCos;
 		vertex->color = CentreColourFull;
 		vertex++;
 
-		vertex->position.x = DirectX::XMScalarSin( startingAngle ) * ( BaseRadius + PetalWidth );
+		vertex->position.x = startingAngleSin * ( BaseRadius + PetalWidth );
 		vertex->position.y = YOffset + PetalHeight;
-		vertex->position.z = DirectX::XMScalarCos( startingAngle ) * ( BaseRadius + PetalWidth );
+		vertex->position.z = startingAngleCos * ( BaseRadius + PetalWidth );
+		vertex->position.w = 1.0f;
+		vertex->normal.x = -petalHeightScaled * startingAngleSin;
+		vertex->normal.y = petalWidthScaled;
+		vertex->normal.z = -petalHeightScaled * startingAngleCos;
 		vertex->color = RimColourFull;
 		vertex++;
 
-		vertex->position.x = DirectX::XMScalarSin( startingAngle + angleStride ) * ( BaseRadius + PetalWidth );
+		vertex->position.x = startingAnglePlusStrideSin * ( BaseRadius + PetalWidth );
 		vertex->position.y = YOffset + PetalHeight;
-		vertex->position.z = DirectX::XMScalarCos( startingAngle + angleStride ) * ( BaseRadius + PetalWidth );
+		vertex->position.z = startingAnglePlusStrideCos * ( BaseRadius + PetalWidth );
+		vertex->position.w = 1.0f;
+		vertex->normal.x = -petalHeightScaled * startingAnglePlusStrideSin;
+		vertex->normal.y = petalWidthScaled;
+		vertex->normal.z = -petalHeightScaled * startingAnglePlusStrideCos;
 		vertex->color = RimColourFull;
 		vertex++;
 
-		vertex->position.x = DirectX::XMScalarSin( startingAngle ) * BaseRadius;
+		vertex->position.x = startingAngleSin * BaseRadius;
 		vertex->position.y = YOffset;
-		vertex->position.z = DirectX::XMScalarCos( startingAngle ) * BaseRadius;
+		vertex->position.z = startingAngleCos * BaseRadius;
+		vertex->position.w = 1.0f;
+		vertex->normal.x = -petalHeightScaled * startingAngleSin;
+		vertex->normal.y = petalWidthScaled;
+		vertex->normal.z = -petalHeightScaled * startingAngleCos;
 		vertex->color = CentreColourFull;
 		vertex++;
 
-		vertex->position.x = DirectX::XMScalarSin( startingAngle + angleStride ) * ( BaseRadius + PetalWidth );
+		vertex->position.x = startingAnglePlusStrideSin * ( BaseRadius + PetalWidth );
 		vertex->position.y = YOffset + PetalHeight;
-		vertex->position.z = DirectX::XMScalarCos( startingAngle + angleStride ) * ( BaseRadius + PetalWidth );
+		vertex->position.z = startingAnglePlusStrideCos * ( BaseRadius + PetalWidth );
+		vertex->position.w = 1.0f;
+		vertex->normal.x = -petalHeightScaled * startingAnglePlusStrideSin;
+		vertex->normal.y = petalWidthScaled;
+		vertex->normal.z = -petalHeightScaled * startingAnglePlusStrideCos;
 		vertex->color = RimColourFull;
 		vertex++;
 
-		vertex->position.x = DirectX::XMScalarSin( startingAngle + angleStride ) * BaseRadius;
+		vertex->position.x = startingAnglePlusStrideSin * BaseRadius;
 		vertex->position.y = YOffset;
-		vertex->position.z = DirectX::XMScalarCos( startingAngle + angleStride ) * BaseRadius;
+		vertex->position.z = startingAnglePlusStrideCos * BaseRadius;
+		vertex->position.w = 1.0f;
+		vertex->normal.x = -petalHeightScaled * startingAnglePlusStrideSin;
+		vertex->normal.y = petalWidthScaled;
+		vertex->normal.z = -petalHeightScaled * startingAnglePlusStrideCos;
 		vertex->color = CentreColourFull;
 		vertex++;
 
@@ -114,10 +162,10 @@ void Flower::Initialise()
 	initialData.pSysMem = petalVertices;
 
 	D3D11_BUFFER_DESC bufferDesc = {};
-	bufferDesc.ByteWidth = NumPetalVertices * sizeof( Vertex );
+	bufferDesc.ByteWidth = NumPetalVertices * sizeof( VertexLit );
 	bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.StructureByteStride = sizeof( Vertex );
+	bufferDesc.StructureByteStride = sizeof( VertexLit );
 
 	// Note the vertex buffer is released in the base class
 	hr = device->CreateBuffer( &bufferDesc, &initialData,
@@ -160,7 +208,7 @@ void Flower::Render()
 	ID3D11DeviceContext* const context = deviceResources->GetD3DDeviceContext();
 
 	// Draw triangle.
-	UINT strides = sizeof( Vertex );
+	UINT strides = sizeof( VertexLit );
 	UINT offsets = 0;
 	context->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 	context->IASetVertexBuffers( 0, 1, &m_vertexBuffer, &strides, &offsets );

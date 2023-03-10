@@ -14,9 +14,10 @@ using namespace DirectX;
 namespace scene
 {
 
-const float Scene::BeeSpawnInterval = 4.0f;
+const float Scene::BeeSpawnInterval = 1.0f;
 const float Scene::FlowerGridSizeUnits = 10.0f;
 const float Scene::FlowerBedSizeUnits = FlowerGridSizeUnits * 1.25f;
+const float Scene::NectarThreshold = 0.9f;
 
 Scene::Scene() :
 	m_camera( nullptr ),
@@ -300,20 +301,45 @@ void Scene::ActivateShaders( const ShaderTypes shaderType )
 
 Flower* Scene::GetFlowerWithMostNectar()
 {
-	float highestNectarLevel = 0.0f;
 	Flower* mostNectarFlower = nullptr;
 
+	// Make a sub list of flowers with the most nectar
+	m_flowerList->sort();
+
+	UINT numSuitableFlowers = 0;
+
+	containers::List< Flower* > flowerSubList;
+
 	FlowerListItor flowerItor = m_flowerList->begin();
+	flowerSubList.push_back( *flowerItor );
+	++flowerItor;
+	++numSuitableFlowers;
+
 	while( flowerItor != m_flowerList->end() )
 	{
 		Flower* flower = *flowerItor;
 		const float nectarLevel = flower->GetNectarLevel();
-		if( nectarLevel > highestNectarLevel )
+		if( nectarLevel > NectarThreshold )
 		{
-			mostNectarFlower = flower;
-			highestNectarLevel = nectarLevel;
+			flowerSubList.push_back( flower );
+			++numSuitableFlowers;
 		}
 		++flowerItor;
+	}
+
+	const UINT randomFlowerID = utils::Rand() % numSuitableFlowers;
+
+	UINT flowerIndex = 0;
+	flowerItor = flowerSubList.begin();
+	while( flowerItor != flowerSubList.end() )
+	{
+		if( flowerIndex == randomFlowerID )
+		{
+			mostNectarFlower = *flowerItor;
+			break;
+		}
+		++flowerItor;
+		++flowerIndex;
 	}
 
 	ASSERT( mostNectarFlower != nullptr, "Couldn't find a flower with most nectar.\n" );
