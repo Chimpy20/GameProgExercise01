@@ -42,9 +42,11 @@ VS_OUTPUT main( VS_INPUT input )
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.color = input.color;
+	input.position.w = 1.0f;
 	output.position = mul( input.position, mWorld );
 	output.position = mul( output.position, mViewProjection );
 	output.normal = mul( input.normal, (float3x3)mWorld );
+	output.normal = normalize( output.normal );
 
 	return output;
 }
