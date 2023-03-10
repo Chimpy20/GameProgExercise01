@@ -25,6 +25,7 @@ Timers::~Timers()
 void Timers::InitialiseTimers()
 {
 	QueryPerformanceFrequency( &m_frequency );
+	QueryPerformanceCounter( &m_previousFrameTime );
 }
 
 void Timers::UpdateFrameTimer()
