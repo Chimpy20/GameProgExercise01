@@ -13,6 +13,7 @@ const float Flower::BaseRadius = 0.2f;
 const float Flower::RimRadius = 0.2f;
 const float Flower::PetalHeight = 0.3f;
 const float Flower::PetalWidth = 0.5f;
+const float Flower::PetalAlternateWidthMultiplier = 1.25f;
 const float Flower::InitialNectarLevelMin = 0.2f;
 const float Flower::InitialNectarLevelMax = 0.8f;
 const float Flower::NectarRechargeRate = 1.0f / 10.0f; // Charge up over 10 seconds
@@ -63,6 +64,8 @@ void Flower::Initialise()
 		const float startingAnglePlusStrideSin = DirectX::XMScalarSin( startingAngle + angleStride );
 		const float startingAnglePlusStrideCos = DirectX::XMScalarCos( startingAngle + angleStride );
 
+		const float petalWidth = ( ( petalIndex % 2 ) == 0 ) ? PetalWidth : PetalWidth * PetalAlternateWidthMultiplier;
+
 		// The centre
 		vertex->position.x = 0.0f;
 		vertex->position.y = YOffset;
@@ -105,9 +108,9 @@ void Flower::Initialise()
 		vertex->color = CentreColourFull;
 		vertex++;
 
-		vertex->position.x = startingAngleSin * ( BaseRadius + PetalWidth );
+		vertex->position.x = startingAngleSin * ( BaseRadius + petalWidth );
 		vertex->position.y = YOffset + PetalHeight;
-		vertex->position.z = startingAngleCos * ( BaseRadius + PetalWidth );
+		vertex->position.z = startingAngleCos * ( BaseRadius + petalWidth );
 		vertex->position.w = 1.0f;
 		vertex->normal.x = -petalHeightScaled * startingAngleSin;
 		vertex->normal.y = petalWidthScaled;
@@ -115,9 +118,9 @@ void Flower::Initialise()
 		vertex->color = RimColourFull;
 		vertex++;
 
-		vertex->position.x = startingAnglePlusStrideSin * ( BaseRadius + PetalWidth );
+		vertex->position.x = startingAnglePlusStrideSin * ( BaseRadius + petalWidth );
 		vertex->position.y = YOffset + PetalHeight;
-		vertex->position.z = startingAnglePlusStrideCos * ( BaseRadius + PetalWidth );
+		vertex->position.z = startingAnglePlusStrideCos * ( BaseRadius + petalWidth );
 		vertex->position.w = 1.0f;
 		vertex->normal.x = -petalHeightScaled * startingAnglePlusStrideSin;
 		vertex->normal.y = petalWidthScaled;
@@ -135,9 +138,9 @@ void Flower::Initialise()
 		vertex->color = CentreColourFull;
 		vertex++;
 
-		vertex->position.x = startingAnglePlusStrideSin * ( BaseRadius + PetalWidth );
+		vertex->position.x = startingAnglePlusStrideSin * ( BaseRadius + petalWidth );
 		vertex->position.y = YOffset + PetalHeight;
-		vertex->position.z = startingAnglePlusStrideCos * ( BaseRadius + PetalWidth );
+		vertex->position.z = startingAnglePlusStrideCos * ( BaseRadius + petalWidth );
 		vertex->position.w = 1.0f;
 		vertex->normal.x = -petalHeightScaled * startingAnglePlusStrideSin;
 		vertex->normal.y = petalWidthScaled;

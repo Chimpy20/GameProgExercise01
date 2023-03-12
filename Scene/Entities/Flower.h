@@ -8,12 +8,13 @@ namespace scene
 class Flower : public Entity
 {
 public:
-	static const UINT NumPetals = 8;
+	static const UINT NumPetals = 16;
 	static const float YOffset;
 	static const float BaseRadius;
 	static const float RimRadius;
 	static const float PetalHeight;
 	static const float PetalWidth;
+	static const float PetalAlternateWidthMultiplier;
 	static const DirectX::XMFLOAT4 CentreColourFull;
 	static const DirectX::XMFLOAT4 RimColourFull;
 
