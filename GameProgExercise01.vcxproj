@@ -234,6 +234,7 @@
     <ClCompile Include="Scene\Entities\FlyingInsect.cpp" />
     <ClCompile Include="Scene\Entities\Ground.cpp" />
     <ClCompile Include="Scene\Entity.cpp" />
+    <ClCompile Include="Scene\EntityHelper.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Utils\File.cpp" />
     <ClCompile Include="Utils\IO.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="Scene\Entities\FlyingInsect.h" />
     <ClInclude Include="Scene\Entities\Ground.h" />
     <ClInclude Include="Scene\Entity.h" />
+    <ClInclude Include="Scene\EntityHelper.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Utils\File.h" />
     <ClInclude Include="Utils\IO.h" />

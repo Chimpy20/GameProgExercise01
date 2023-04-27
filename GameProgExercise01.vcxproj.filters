@@ -87,6 +87,9 @@
     <ClCompile Include="Scene\Entities\FlyingInsect.cpp">
       <Filter>Source Files\Scene\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\EntityHelper.cpp">
+      <Filter>Source Files\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="Scene\Entities\FlyingInsect.h">
       <Filter>Source Files\Scene\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\EntityHelper.h">
+      <Filter>Source Files\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
