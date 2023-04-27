@@ -134,6 +134,9 @@
     <ClInclude Include="Scene\Entities\Ground.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\EntityHelper.h">
+      <Filter>Source Files\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl" />
