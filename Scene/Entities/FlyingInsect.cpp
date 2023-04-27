@@ -1,5 +1,6 @@
 #include "GameProgExercise01.h"
 #include "Core.h"
+#include "Scene\EntityHelper.h"
 #include "Scene\Entities\FlyingInsect.h"
 
 using namespace DirectX;
@@ -17,6 +18,7 @@ const float FlyingInsect::TargetTriggerDistance = 0.2f;
 FlyingInsect::FlyingInsect() :
 	m_speed( 0.0f ),
 	m_killSignal( false ),
+	m_numVertices( 0 ),
 	m_movementState( MovementState::Idle ),
 	m_desiredSpeed( 0.0f )
 {
@@ -34,56 +36,7 @@ FlyingInsect::~FlyingInsect()
 {
 }
 
-const FlyingInsect::VertexLit FlyingInsect::InsectBoxVertices[ FlyingInsect::NumVertices ] =
-{
-	// Front face
-	{ { -0.5f, -0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, -0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, -0.5f, 0.5f, 1.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
 
-	// Right side
-	{ { 0.5f, -0.5f, 0.5f, 1.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, 0.5f, 1.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, -0.5f, 0.5f, 1.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, -0.5f, -0.5f, 1.0f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-
-	// Back face
-	{ { 0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, 0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, 0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, 0.0f, -1.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-
-	// Left side
-	{ { -0.5f, -0.5f, -0.5f, 1.0f }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, 0.5f, -0.5f, 1.0f }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, 0.5f, 0.5f, 1.0f }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, -0.5f, -0.5f, 1.0f }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, 0.5f, 0.5f, 1.0f }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, -0.5f, 0.5f, 1.0f }, { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-
-	// Top
-	{ { -0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, 0.5f, 0.5f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, 0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, 0.5f, -0.5f, 1.0f }, { 0.0f, 1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-
-	// Bottom
-	{ { -0.5f, -0.5f, 0.5f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { -0.5f, -0.5f, 0.5f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, -0.5f, -0.5f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-	{ { 0.5f, -0.5f, 0.5f, 1.0f }, { 0.0f, -1.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f } },
-};
 
 void FlyingInsect::Initialise()
 {
@@ -97,16 +50,18 @@ void FlyingInsect::Initialise()
 
 	ID3D11Device* const device = deviceResources->GetD3DDevice();
 
+	const Entity::VertexLit* const cubeVertices = helper::GetCubeVertices( m_numVertices );
+
 	// Create the sides of the box
-	VertexLit* const vertices = new VertexLit[ NumVertices ];
+	VertexLit* const vertices = new VertexLit[ m_numVertices ];
 	ASSERT( vertices != nullptr, "Couldn't create vertices.\n" );
-	memcpy( vertices, InsectBoxVertices, sizeof( VertexLit ) * NumVertices );
+	memcpy( vertices, cubeVertices, sizeof( VertexLit ) * m_numVertices );
 
 	D3D11_SUBRESOURCE_DATA initialData = {};
 	initialData.pSysMem = vertices;
 
 	D3D11_BUFFER_DESC bufferDesc = {};
-	bufferDesc.ByteWidth = NumVertices * sizeof( VertexLit );
+	bufferDesc.ByteWidth = m_numVertices * sizeof( VertexLit );
 	bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.StructureByteStride = sizeof( VertexLit );
@@ -219,7 +174,7 @@ void FlyingInsect::Render()
 	UINT offsets = 0;
 	context->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 	context->IASetVertexBuffers( 0, 1, &m_vertexBuffer, &strides, &offsets );
-	context->Draw( NumVertices, 0 );
+	context->Draw( m_numVertices, 0 );
 }
 
 void FlyingInsect::RequestMovementState( MovementState state )

@@ -60,8 +60,6 @@ public:
 	}
 
 protected:
-	static const UINT NumVertices = 6 * 3 * 2;
-	static const FlyingInsect::VertexLit InsectBoxVertices[ NumVertices ];
 	static const float LerpRate;
 	static const float Acceleration;
 	static const float SpawnRadius;
@@ -70,9 +68,10 @@ protected:
 
 	float					m_speed;
 	bool					m_killSignal;
-	UINT					m_padding[ 2 ]{};
+	UINT					m_padding[ 1 ]{};
 
 private:
+	UINT					m_numVertices;
 	DirectX::XMVECTOR		m_desiredOrienation;
 	DirectX::XMVECTOR		m_targetPosition;
 	float					m_desiredSpeed;
