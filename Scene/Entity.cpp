@@ -70,7 +70,7 @@ void Entity::Render()
 
 	XMMATRIX scaleMatrix = XMMatrixScaling( m_scale, m_scale, m_scale );
 
-	XMMATRIX scaledWorldMatrix = XMMatrixMultiply( worldMatrix, scaleMatrix );
+	XMMATRIX scaledWorldMatrix = XMMatrixMultiply( scaleMatrix, worldMatrix );
 
 	// Set the position row of the world matrix
 	scaledWorldMatrix.r[ 3 ] = m_position;
