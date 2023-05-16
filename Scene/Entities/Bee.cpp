@@ -17,7 +17,7 @@ Bee::Bee() :
 	m_targetFlower( nullptr ),
 	m_initialTargetNectarLevel( 0.0f )
 {
-	m_scale.v = XMVECTOR{ 0.25f, 0.15f, 0.2f, 0.0f };
+	m_scale.v = XMVECTOR{ 0.2f, 0.15f, 0.4f, 0.0f };
 	m_colour = XMFLOAT4{ 1.0f, 1.0f, 0.2f, 1.0f };
 }
 
