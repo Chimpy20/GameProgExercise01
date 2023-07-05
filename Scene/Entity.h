@@ -66,17 +66,17 @@ public:
 
 	const DirectX::XMVECTOR GetOrientationAsVector() const;
 
-
 protected:
 	ID3D11Buffer*				m_vertexBuffer;
-	ID3D11Buffer*				m_constantBuffer;
-
 	DirectX::XMVECTORF32		m_position;
 	DirectX::XMMATRIX			m_orientation;
 	DirectX::XMFLOAT4			m_colour;
-	float						m_scale;
+	DirectX::XMVECTORF32		m_scale;
 
 	Scene::ShaderTypes			m_shaderType;
+
+private:
+	ID3D11Buffer* m_constantBuffer;
 };
 
 } // namespace scene

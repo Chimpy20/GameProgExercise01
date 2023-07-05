@@ -18,7 +18,7 @@ Entity::Entity() :
 	m_orientation = XMMatrixIdentity();
 	m_position.v = XMVectorZero();
 	m_position.f[ 3 ] = 1.0f;
-	m_scale = 1.0f;
+	m_scale = g_XMOne3;
 }
 
 Entity::~Entity()
@@ -68,7 +68,7 @@ void Entity::Render()
 	// Get the orientation matrix ready for a world matrix
 	XMMATRIX worldMatrix = m_orientation;
 
-	XMMATRIX scaleMatrix = XMMatrixScaling( m_scale, m_scale, m_scale );
+	XMMATRIX scaleMatrix = XMMatrixScaling( m_scale.f[ 0 ], m_scale.f[ 1 ], m_scale.f[ 2 ] );
 
 	XMMATRIX scaledWorldMatrix = XMMatrixMultiply( scaleMatrix, worldMatrix );
 
@@ -130,7 +130,9 @@ void Entity::SetOrientation( const XMVECTOR& orientation )
 
 void Entity::SetScale( const float scale )
 {
-	m_scale = scale;
+	for( UINT index = 0; index < 3; ++index )
+		m_scale.f[ index ] = scale;
+	m_scale.f[ 3 ] = 0.0f;
 }
 
 const XMVECTOR Entity::GetOrientationAsVector() const
