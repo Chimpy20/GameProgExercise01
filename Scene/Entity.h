@@ -31,11 +31,11 @@ public:
 	Entity();
 	~Entity();
 
-	void						Initialise();
-	void						Shutdown();
+	virtual void				Initialise();
+	virtual void				Shutdown();
 
-	void						Update();
-	void						Render();
+	virtual void				Update();
+	virtual void				Render();
 
 	// Mutators
 	void						SetPosition( const DirectX::XMVECTOR position );
