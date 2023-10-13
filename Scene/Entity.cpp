@@ -135,6 +135,12 @@ void Entity::SetScale( const float scale )
 	m_scale.f[ 3 ] = 0.0f;
 }
 
+
+void Entity::SetScale( const DirectX::XMVECTORF32& scale )
+{
+	m_scale = scale;
+}
+
 const XMVECTOR Entity::GetOrientationAsVector() const
 {
 	XMVECTOR orientation;

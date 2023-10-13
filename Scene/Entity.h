@@ -42,6 +42,7 @@ public:
 	void						SetOrientation( const DirectX::XMMATRIX& orientation );
 	void						SetOrientation( const DirectX::XMVECTOR& orientation );
 	void						SetScale( const float scale );
+	void						SetScale( const DirectX::XMVECTORF32& scale );
 
 	inline void					SetColour( const DirectX::XMFLOAT4 colour )
 	{
