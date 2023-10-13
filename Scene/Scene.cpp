@@ -8,6 +8,7 @@
 #include "Scene\Entities\Ground.h"
 #include "Scene\Entities\Flower.h"
 #include "Scene\Entities\Bee.h"
+#include "Scene\Entities\Hive.h"
 
 using namespace DirectX;
 
@@ -18,12 +19,25 @@ const float Scene::BeeSpawnInterval = 1.0f;
 const float Scene::FlowerGridSizeUnits = 10.0f;
 const float Scene::FlowerBedSizeUnits = FlowerGridSizeUnits * 1.25f;
 const float Scene::NectarThreshold = 0.9f;
+const float Scene::HiveDistanceFromOrigin = FlowerGridSizeUnits;
+
+
+const XMFLOAT4 Scene::HiveColours[ NumHives ] =
+{
+	XMFLOAT4{ 0.8f, 0.3f, 0.3f, 1.0f }, // red
+	XMFLOAT4{ 0.3f, 0.8f, 0.3f, 1.0f }, // green
+	XMFLOAT4{ 0.3f, 0.3f, 0.8f, 1.0f }, // blue
+	XMFLOAT4{ 0.7f, 0.7f, 0.15f, 1.0f }, // yellow
+	XMFLOAT4{ 0.15f, 0.7f, 0.7f, 1.0f },  // cyan
+	XMFLOAT4{ 0.7f, 0.15f, 0.7f, 1.0f }  // magenta
+};
 
 Scene::Scene() :
 	m_camera( nullptr ),
 	m_ground( nullptr ),
 	m_beeList( nullptr ),
 	m_flowerList( nullptr ),
+	m_hiveList( nullptr ),
 	m_beeSpawnTimer( 0.0f )
 {
 	m_camera = new Camera();
@@ -32,6 +46,7 @@ Scene::Scene() :
 
 	m_beeList = new containers::List< Bee* >();
 	m_flowerList = new containers::List< Flower* >();
+	m_hiveList = new containers::List< Hive* >();
 }
 
 Scene::~Scene()
@@ -62,6 +77,18 @@ Scene::~Scene()
 
 	if( m_flowerList != nullptr )
 		delete m_flowerList;
+
+	// delete each hive
+	HiveListItor hiveItor = m_hiveList->begin();
+	while ( hiveItor != m_hiveList->end() )
+	{
+		Hive* hive = *hiveItor;
+		delete hive;
+		++hiveItor;
+	}
+
+	if ( m_hiveList != nullptr )
+		delete m_hiveList;
 
 	if( m_ground != nullptr )
 		delete m_ground;
@@ -157,7 +184,7 @@ void Scene::Initialise()
 	m_ground->Initialise();
 	m_ground->SetScale( FlowerBedSizeUnits );
 
-	// Createa grid of NxX flowers
+	// Create a grid of NxX flowers
 	const float FlowerGridSizeAsFloat = (float)( FlowerGridSize - 1 );
 	for( UINT gridX = 0; gridX < FlowerGridSize; gridX++ )
 	{
@@ -171,6 +198,23 @@ void Scene::Initialise()
 			newFlower->SetPosition( XMVECTOR{ xPos, 0.0f, zPos } );
 		}
 	}
+
+	// Create N hives
+	for( UINT hiveIndex = 0; hiveIndex < NumHives; ++hiveIndex )
+	{
+		Hive* newHive = new Hive( hiveIndex );
+		newHive->Initialise();
+		m_hiveList->push_back( newHive );
+		const float angle = XM_2PI / (float)( NumHives ) * (float)( hiveIndex );
+		const float xPos = XMScalarSin( angle ) * HiveDistanceFromOrigin;
+		const float zPos = XMScalarCos( angle ) * HiveDistanceFromOrigin;
+		newHive->SetPosition( XMVECTOR{ xPos, 1.0f, zPos } );
+		newHive->SetScale( XMVECTORF32{ 1.0f, 2.0f, 1.0f } );
+		XMVECTOR orientation = XMVECTOR{ -xPos, 0.0f, -zPos, 0.0f };
+		orientation = XMVector3Normalize( orientation );
+		newHive->SetOrientation( orientation );
+		newHive->SetColour( HiveColours[ hiveIndex ] );
+	}
 }
 
 void Scene::Shutdown()
@@ -183,6 +227,7 @@ void Scene::Shutdown()
 		bee->Shutdown();
 		++itor;
 	}
+
 	// Shutdown each flower
 	FlowerListItor flowerItor = m_flowerList->begin();
 	while( flowerItor != m_flowerList->end() )
@@ -190,6 +235,15 @@ void Scene::Shutdown()
 		Flower* flower = *flowerItor;
 		flower->Shutdown();
 		++flowerItor;
+	}
+
+	// Shutdown each hive	
+	HiveListItor hiveItor = m_hiveList->begin();
+	while( hiveItor != m_hiveList->end() )
+	{
+		Hive* hive = *hiveItor;
+		hive->Shutdown();
+		++hiveItor;
 	}
 
 	m_ground->Shutdown();
@@ -256,6 +310,15 @@ void Scene::Update()
 		flower->Update();
 		++flowerItor;
 	}
+
+	// Update each hive	
+	HiveListItor hiveItor = m_hiveList->begin();
+	while ( hiveItor != m_hiveList->end() )
+	{
+		Hive* hive = *hiveItor;
+		hive->Update();
+		++hiveItor;
+	}
 }
 
 void Scene::Render()
@@ -278,6 +341,15 @@ void Scene::Render()
 		Bee* bee = *itor;
 		bee->Render();
 		++itor;
+	}
+
+	// Render each hive	
+	HiveListItor hiveItor = m_hiveList->begin();
+	while ( hiveItor != m_hiveList->end() )
+	{
+		Hive* hive = *hiveItor;
+		hive->Render();
+		++hiveItor;
 	}
 }
 

@@ -10,6 +10,7 @@ class Camera;
 class Ground;
 class Flower;
 class Bee;
+class Hive;
 
 // Object containing all the entities and related objects in the scene
 class Scene sealed
@@ -21,6 +22,9 @@ class Scene sealed
 	static const UINT MaxBees = FlowerGridSize * FlowerGridSize * 2;
 	static_assert( FlowerGridSize > 0, "Not enough flowers" );
 	static const float NectarThreshold;
+	static const UINT NumHives = 6;
+	static const float HiveDistanceFromOrigin;
+	static const DirectX::XMFLOAT4 HiveColours[ NumHives ];
 
 public:
 	enum ShaderTypes
@@ -69,6 +73,9 @@ private:
 
 	containers::List< Flower* >* m_flowerList;
 	typedef containers::List< Flower* >::iterator FlowerListItor;
+
+	containers::List< Hive* >* m_hiveList;
+	typedef containers::List< Hive* >::iterator HiveListItor;
 };
 
 } // namespace scene

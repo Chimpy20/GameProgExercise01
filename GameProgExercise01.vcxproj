@@ -233,6 +233,7 @@
     <ClCompile Include="Scene\Entities\Flower.cpp" />
     <ClCompile Include="Scene\Entities\FlyingInsect.cpp" />
     <ClCompile Include="Scene\Entities\Ground.cpp" />
+    <ClCompile Include="Scene\Entities\Hive.cpp" />
     <ClCompile Include="Scene\Entity.cpp" />
     <ClCompile Include="Scene\EntityHelper.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="Scene\Entities\Flower.h" />
     <ClInclude Include="Scene\Entities\FlyingInsect.h" />
     <ClInclude Include="Scene\Entities\Ground.h" />
+    <ClInclude Include="Scene\Entities\Hive.h" />
     <ClInclude Include="Scene\Entity.h" />
     <ClInclude Include="Scene\EntityHelper.h" />
     <ClInclude Include="Scene\Scene.h" />
