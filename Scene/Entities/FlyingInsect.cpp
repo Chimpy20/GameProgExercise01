@@ -22,8 +22,6 @@ FlyingInsect::FlyingInsect() :
 	m_movementState( MovementState::Idle ),
 	m_desiredSpeed( 0.0f )
 {
-	m_colour = XMFLOAT4{ 1.0f, 1.0f, 1.0f, 1.0f };
-
 	m_shaderType = Scene::ShaderTypes::Lit;
 
 	m_desiredOrienation = XMVectorZero();
